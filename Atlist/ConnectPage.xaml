@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Atlist.ViewModels"
+             xmlns:models="clr-namespace:Atlist.Models"
+             x:Class="Atlist.Views.ConnectPage"
+             x:DataType="vm:ConnectViewModel"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{StaticResource Ground}">
+
+    <ContentPage.Resources>
+        <!-- Colors from the mockup. Move these into Resources/Styles/Colors.xaml once more pages exist. -->
+        <Color x:Key="Ground">#F4F1EA</Color>
+        <Color x:Key="Ink">#1F2A2E</Color>
+        <Color x:Key="Muted">#56616A</Color>
+        <Color x:Key="Accent">#1F6F6B</Color>
+        <Color x:Key="AccentSoft">#E4EFEC</Color>
+        <Color x:Key="SuccessInk">#145C4A</Color>
+        <Color x:Key="SuccessSoft">#DDEFE9</Color>
+        <Color x:Key="Warn">#8A4414</Color>
+        <Color x:Key="CardLine">#E2DBCC</Color>
+        <Color x:Key="FieldLine">#C9BFAC</Color>
+
+        <Style x:Key="Card" TargetType="Border">
+            <Setter Property="BackgroundColor" Value="White" />
+            <Setter Property="Stroke" Value="{StaticResource CardLine}" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="StrokeShape" Value="RoundRectangle 14" />
+            <Setter Property="Padding" Value="16,14" />
+        </Style>
+
+        <Style x:Key="OutlineButton" TargetType="Button">
+            <Setter Property="BackgroundColor" Value="White" />
+            <Setter Property="TextColor" Value="{StaticResource Accent}" />
+            <Setter Property="BorderColor" Value="{StaticResource Accent}" />
+            <Setter Property="BorderWidth" Value="2" />
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="FontFamily" Value="AtkinsonBold" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="MinimumHeightRequest" Value="44" />
+            <Setter Property="Padding" Value="18,0" />
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto,Auto"
+          RowSpacing="20"
+          Padding="20,28,20,28">
+
+        <!-- Row 0: wordmark -->
+        <Label Grid.Row="0"
+               Text="CHECKLIST COMPANION"
+               FontFamily="AtkinsonBold"
+               FontSize="14"
+               CharacterSpacing="1.2"
+               TextColor="{StaticResource Accent}" />
+
+        <!-- Row 1: heading + instructions -->
+        <VerticalStackLayout Grid.Row="1" Spacing="10">
+            <Label Text="Connect your checklist devices"
+                   FontFamily="FrauncesSemiBold"
+                   FontSize="32"
+                   LineHeight="1.1"
+                   TextColor="{StaticResource Ink}"
+                   SemanticProperties.HeadingLevel="Level1" />
+            <Label Text="Plug each device in and hold its button for 3 seconds. Its screen will show PAIR MODE and a 4-digit code."
+                   FontFamily="Atkinson"
+                   FontSize="16"
+                   LineHeight="1.4"
+                   TextColor="{StaticResource Muted}" />
+        </VerticalStackLayout>
+
+        <!-- Row 2: scan status banner -->
+        <Border Grid.Row="2"
+                BackgroundColor="{StaticResource AccentSoft}"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 14"
+                Padding="16,14"
+                SemanticProperties.Description="{Binding ScanStatus}">
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                <ActivityIndicator Grid.Column="0"
+                                   IsRunning="{Binding IsScanning}"
+                                   Color="{StaticResource SuccessInk}"
+                                   WidthRequest="22" HeightRequest="22" />
+                <Label Grid.Column="1"
+                       Text="{Binding ScanStatus}"
+                       FontFamily="AtkinsonBold"
+                       FontSize="16"
+                       TextColor="{StaticResource SuccessInk}"
+                       VerticalOptions="Center" />
+                <Label Grid.Column="2"
+                       Text="{Binding FoundText}"
+                       FontFamily="Atkinson"
+                       FontSize="14"
+                       TextColor="{StaticResource SuccessInk}"
+                       VerticalOptions="Center" />
+            </Grid>
+        </Border>
+
+        <!-- Row 3: list of devices in pair mode -->
+        <VerticalStackLayout Grid.Row="3" Spacing="10">
+            <Label Text="Devices in pair mode"
+                   FontFamily="AtkinsonBold"
+                   FontSize="13"
+                   CharacterSpacing="0.8"
+                   TextColor="{StaticResource Muted}" />
+
+            <CollectionView ItemsSource="{Binding Devices}"
+                            SelectionMode="None">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+                </CollectionView.ItemsLayout>
+
+                <CollectionView.EmptyView>
+                    <Label Text="No devices yet. Hold a device's button for 3 seconds to put it in pair mode."
+                           FontFamily="Atkinson"
+                           FontSize="15"
+                           TextColor="{StaticResource Muted}"
+                           Margin="0,8" />
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:ChecklistDevice">
+                        <Border Style="{StaticResource Card}">
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+
+                                <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
+                                    <Label Text="{Binding AdvertisedName}"
+                                           FontFamily="AtkinsonBold"
+                                           FontSize="17"
+                                           TextColor="{StaticResource Ink}" />
+                                    <Label Text="{Binding StatusText}"
+                                           FontFamily="Atkinson"
+                                           FontSize="14"
+                                           TextColor="{StaticResource Muted}">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding IsWeakSignal}" Value="True">
+                                                <Setter Property="TextColor" Value="{StaticResource Warn}" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Label" Binding="{Binding IsPaired}" Value="True">
+                                                <Setter Property="TextColor" Value="{StaticResource Muted}" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                </VerticalStackLayout>
+
+                                <!-- Right side: "Paired" pill, a spinner while pairing, or the Pair button -->
+                                <Grid Grid.Column="1" VerticalOptions="Center">
+                                    <Border IsVisible="{Binding IsPaired}"
+                                            BackgroundColor="{StaticResource SuccessSoft}"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 999"
+                                            Padding="12,6">
+                                        <Label Text="Paired"
+                                               FontFamily="AtkinsonBold"
+                                               FontSize="14"
+                                               TextColor="{StaticResource SuccessInk}" />
+                                    </Border>
+
+                                    <Grid IsVisible="{Binding IsNotPaired}">
+                                        <ActivityIndicator IsVisible="{Binding IsBusy}"
+                                                           IsRunning="{Binding IsBusy}"
+                                                           Color="{StaticResource Accent}"
+                                                           WidthRequest="28" HeightRequest="28" />
+                                        <Button Text="Pair"
+                                                Style="{StaticResource OutlineButton}"
+                                                IsVisible="{Binding ShowPairButton}"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ConnectViewModel}}, Path=PairCommand, x:DataType=vm:ConnectViewModel}"
+                                                CommandParameter="{Binding .}"
+                                                SemanticProperties.Description="{Binding AdvertisedName, StringFormat='Pair {0}'}" />
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+
+        <!-- Row 4: name the device you just paired (only shown right after pairing) -->
+        <Border Grid.Row="4"
+                IsVisible="{Binding IsNamingDevice}"
+                BackgroundColor="White"
+                Stroke="{StaticResource FieldLine}"
+                StrokeDashArray="4,3"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 14"
+                Padding="16,14">
+            <VerticalStackLayout Spacing="8">
+                <Label Text="{Binding DeviceToName.AdvertisedName, StringFormat='Name {0}'}"
+                       FontFamily="AtkinsonBold"
+                       FontSize="15"
+                       TextColor="{StaticResource Ink}" />
+                <Label Text="Name shown in the app, like &quot;Take Meds&quot;"
+                       FontFamily="Atkinson"
+                       FontSize="14"
+                       TextColor="{StaticResource Muted}" />
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                    <Entry Grid.Column="0"
+                           Text="{Binding NameEntry}"
+                           Placeholder="Take Meds"
+                           MaxLength="16"
+                           FontFamily="Atkinson"
+                           FontSize="16"
+                           TextColor="{StaticResource Ink}"
+                           BackgroundColor="#FBFAF6"
+                           MinimumHeightRequest="44"
+                           ReturnCommand="{Binding SaveNameCommand}"
+                           SemanticProperties.Description="Name shown in the app" />
+                    <Button Grid.Column="1"
+                            Text="Save"
+                            Style="{StaticResource OutlineButton}"
+                            Command="{Binding SaveNameCommand}" />
+                </Grid>
+            </VerticalStackLayout>
+        </Border>
+
+        <!-- Row 5: continue + privacy note -->
+        <VerticalStackLayout Grid.Row="5" Spacing="10">
+            <Button Text="Continue to my devices"
+                    Command="{Binding ContinueCommand}"
+                    BackgroundColor="{StaticResource Accent}"
+                    TextColor="White"
+                    FontFamily="AtkinsonBold"
+                    FontSize="18"
+                    CornerRadius="14"
+                    MinimumHeightRequest="54" />
+            <Label Text="Bluetooth only. The devices have no camera or microphone."
+                   FontFamily="Atkinson"
+                   FontSize="13"
+                   HorizontalTextAlignment="Center"
+                   TextColor="{StaticResource Muted}" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

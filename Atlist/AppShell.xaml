@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<Shell
-    x:Class="Atlist.AppShell"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:Atlist"
-    Title="Atlist">
+<Shell x:Class="Atlist.AppShell"
+       xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:local="clr-namespace:Atlist"
+       xmlns:views="clr-namespace:Atlist.Views"
+       Shell.FlyoutBehavior="Disabled"
+       Title="Atlist">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <!-- First screen the app opens -->
+    <ShellContent Route="connect"
+                  ContentTemplate="{DataTemplate views:ConnectPage}" />
 
+    <!-- Placeholder until the Devices page is built -->
+    <ShellContent Route="devices"
+                  ContentTemplate="{DataTemplate local:MainPage}" />
 </Shell>
