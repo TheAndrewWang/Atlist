@@ -9,8 +9,10 @@
     ".NETCoreApp,Version=v10.0/win-x64": {
       "Atlist/1.0": {
         "dependencies": {
+          "CommunityToolkit.Mvvm": "8.4.2",
           "Microsoft.Extensions.Logging.Debug": "10.0.0",
           "Microsoft.Maui.Controls": "10.0.20",
+          "Plugin.BLE": "3.2.1",
           "Microsoft.Web.WebView2.Core.Projection": "1.0.3179.45",
           "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.57"
         },
@@ -27,6 +29,14 @@
           "WinRT.Runtime.dll": {
             "assemblyVersion": "2.2.0.0",
             "fileVersion": "2.2.0.48161"
+          }
+        }
+      },
+      "CommunityToolkit.Mvvm/8.4.2": {
+        "runtime": {
+          "lib/net8.0-windows10.0.17763/CommunityToolkit.Mvvm.dll": {
+            "assemblyVersion": "8.4.0.0",
+            "fileVersion": "8.4.2.1"
           }
         }
       },
@@ -509,6 +519,14 @@
           }
         }
       },
+      "Plugin.BLE/3.2.1": {
+        "runtime": {
+          "lib/net9.0-windows10.0.19041/Plugin.BLE.dll": {
+            "assemblyVersion": "3.2.1.0",
+            "fileVersion": "3.2.1.0"
+          }
+        }
+      },
       "Microsoft.Web.WebView2.Core.Projection/1.0.3179.45": {
         "runtime": {
           "Microsoft.Web.WebView2.Core.Projection.dll": {
@@ -529,6 +547,13 @@
       "type": "runtimepack",
       "serviceable": false,
       "sha512": ""
+    },
+    "CommunityToolkit.Mvvm/8.4.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-WadCzGEc2U+3e20avRLng4qNtt4zoOGWrdUISqJWrHe3/FSnrYjuM5Sb4yQb09LhkBXrrI4Zt3dLKgRMbItsrg==",
+      "path": "communitytoolkit.mvvm/8.4.2",
+      "hashPath": "communitytoolkit.mvvm.8.4.2.nupkg.sha512"
     },
     "Microsoft.Extensions.Configuration/10.0.0": {
       "type": "package",
@@ -690,6 +715,13 @@
       "sha512": "sha512-zeVFVrkFYPkAL1cmXo62D1LVC66VqBiMx+WfZ3aDUmizNECCJewMTk0JwjlgYQcIqxqsK1SjF1CeG74TsokWpQ==",
       "path": "microsoft.windowsappsdk/1.7.250909003",
       "hashPath": "microsoft.windowsappsdk.1.7.250909003.nupkg.sha512"
+    },
+    "Plugin.BLE/3.2.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-76XxEHkmbKAsAEHGZC/U70nzXyaRLwG/tbFLRuvg/l+k8xVsPIeQj1AptwIrPKA/TVNTEvUeTw1kmNu11vOZyA==",
+      "path": "plugin.ble/3.2.1",
+      "hashPath": "plugin.ble.3.2.1.nupkg.sha512"
     },
     "Microsoft.Web.WebView2.Core.Projection/1.0.3179.45": {
       "type": "reference",

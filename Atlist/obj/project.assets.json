@@ -2,6 +2,22 @@
   "version": 4,
   "targets": {
     "net10.0-android": {
+      "CommunityToolkit.Mvvm/8.4.2": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/CommunityToolkit.Mvvm.targets": {}
+        }
+      },
       "GoogleGson/2.13.1.1": {
         "type": "package",
         "dependencies": {
@@ -492,6 +508,19 @@
         "type": "package",
         "build": {
           "build/Microsoft.NET.ILLink.Tasks.props": {}
+        }
+      },
+      "Plugin.BLE/3.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0-android35.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0-android35.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
         }
       },
       "Xamarin.Android.Glide/4.16.0.14": {
@@ -2487,6 +2516,22 @@
       }
     },
     "net10.0-android/android-arm64": {
+      "CommunityToolkit.Mvvm/8.4.2": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/CommunityToolkit.Mvvm.targets": {}
+        }
+      },
       "GoogleGson/2.13.1.1": {
         "type": "package",
         "dependencies": {
@@ -2977,6 +3022,19 @@
         "type": "package",
         "build": {
           "build/Microsoft.NET.ILLink.Tasks.props": {}
+        }
+      },
+      "Plugin.BLE/3.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0-android35.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0-android35.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
         }
       },
       "Xamarin.Android.Glide/4.16.0.14": {
@@ -4972,6 +5030,22 @@
       }
     },
     "net10.0-android/android-x64": {
+      "CommunityToolkit.Mvvm/8.4.2": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/CommunityToolkit.Mvvm.targets": {}
+        }
+      },
       "GoogleGson/2.13.1.1": {
         "type": "package",
         "dependencies": {
@@ -5462,6 +5536,19 @@
         "type": "package",
         "build": {
           "build/Microsoft.NET.ILLink.Tasks.props": {}
+        }
+      },
+      "Plugin.BLE/3.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0-android35.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0-android35.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
         }
       },
       "Xamarin.Android.Glide/4.16.0.14": {
@@ -7457,6 +7544,22 @@
       }
     },
     "net10.0-android/iossimulator-x64": {
+      "CommunityToolkit.Mvvm/8.4.2": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/CommunityToolkit.Mvvm.targets": {}
+        }
+      },
       "GoogleGson/2.13.1.1": {
         "type": "package",
         "dependencies": {
@@ -7947,6 +8050,19 @@
         "type": "package",
         "build": {
           "build/Microsoft.NET.ILLink.Tasks.props": {}
+        }
+      },
+      "Plugin.BLE/3.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0-android35.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0-android35.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
         }
       },
       "Xamarin.Android.Glide/4.16.0.14": {
@@ -9942,6 +10058,22 @@
       }
     },
     "net10.0-android/maccatalyst-x64": {
+      "CommunityToolkit.Mvvm/8.4.2": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/CommunityToolkit.Mvvm.targets": {}
+        }
+      },
       "GoogleGson/2.13.1.1": {
         "type": "package",
         "dependencies": {
@@ -10432,6 +10564,19 @@
         "type": "package",
         "build": {
           "build/Microsoft.NET.ILLink.Tasks.props": {}
+        }
+      },
+      "Plugin.BLE/3.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0-android35.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0-android35.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
         }
       },
       "Xamarin.Android.Glide/4.16.0.14": {
@@ -12427,6 +12572,22 @@
       }
     },
     "net10.0-android/win-x64": {
+      "CommunityToolkit.Mvvm/8.4.2": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/CommunityToolkit.Mvvm.targets": {}
+        }
+      },
       "GoogleGson/2.13.1.1": {
         "type": "package",
         "dependencies": {
@@ -12917,6 +13078,19 @@
         "type": "package",
         "build": {
           "build/Microsoft.NET.ILLink.Tasks.props": {}
+        }
+      },
+      "Plugin.BLE/3.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0-android35.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0-android35.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
         }
       },
       "Xamarin.Android.Glide/4.16.0.14": {
@@ -14912,6 +15086,22 @@
       }
     },
     "net10.0-ios": {
+      "CommunityToolkit.Mvvm/8.4.2": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/CommunityToolkit.Mvvm.targets": {}
+        }
+      },
       "Microsoft.Extensions.Configuration/10.0.0": {
         "type": "package",
         "dependencies": {
@@ -15373,10 +15563,39 @@
         "type": "package",
         "build": {
           "build/Microsoft.NET.ILLink.Tasks.props": {}
+        }
+      },
+      "Plugin.BLE/3.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0-ios18.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0-ios18.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
         }
       }
     },
     "net10.0-ios/android-arm64": {
+      "CommunityToolkit.Mvvm/8.4.2": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/CommunityToolkit.Mvvm.targets": {}
+        }
+      },
       "Microsoft.Extensions.Configuration/10.0.0": {
         "type": "package",
         "dependencies": {
@@ -15838,10 +16057,39 @@
         "type": "package",
         "build": {
           "build/Microsoft.NET.ILLink.Tasks.props": {}
+        }
+      },
+      "Plugin.BLE/3.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0-ios18.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0-ios18.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
         }
       }
     },
     "net10.0-ios/android-x64": {
+      "CommunityToolkit.Mvvm/8.4.2": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/CommunityToolkit.Mvvm.targets": {}
+        }
+      },
       "Microsoft.Extensions.Configuration/10.0.0": {
         "type": "package",
         "dependencies": {
@@ -16303,10 +16551,39 @@
         "type": "package",
         "build": {
           "build/Microsoft.NET.ILLink.Tasks.props": {}
+        }
+      },
+      "Plugin.BLE/3.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0-ios18.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0-ios18.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
         }
       }
     },
     "net10.0-ios/iossimulator-x64": {
+      "CommunityToolkit.Mvvm/8.4.2": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/CommunityToolkit.Mvvm.targets": {}
+        }
+      },
       "Microsoft.Extensions.Configuration/10.0.0": {
         "type": "package",
         "dependencies": {
@@ -16768,10 +17045,39 @@
         "type": "package",
         "build": {
           "build/Microsoft.NET.ILLink.Tasks.props": {}
+        }
+      },
+      "Plugin.BLE/3.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0-ios18.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0-ios18.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
         }
       }
     },
     "net10.0-ios/maccatalyst-x64": {
+      "CommunityToolkit.Mvvm/8.4.2": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/CommunityToolkit.Mvvm.targets": {}
+        }
+      },
       "Microsoft.Extensions.Configuration/10.0.0": {
         "type": "package",
         "dependencies": {
@@ -17233,10 +17539,39 @@
         "type": "package",
         "build": {
           "build/Microsoft.NET.ILLink.Tasks.props": {}
+        }
+      },
+      "Plugin.BLE/3.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0-ios18.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0-ios18.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
         }
       }
     },
     "net10.0-ios/win-x64": {
+      "CommunityToolkit.Mvvm/8.4.2": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/CommunityToolkit.Mvvm.targets": {}
+        }
+      },
       "Microsoft.Extensions.Configuration/10.0.0": {
         "type": "package",
         "dependencies": {
@@ -17699,9 +18034,38 @@
         "build": {
           "build/Microsoft.NET.ILLink.Tasks.props": {}
         }
+      },
+      "Plugin.BLE/3.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0-ios18.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0-ios18.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
+        }
       }
     },
     "net10.0-maccatalyst": {
+      "CommunityToolkit.Mvvm/8.4.2": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/CommunityToolkit.Mvvm.targets": {}
+        }
+      },
       "Microsoft.Extensions.Configuration/10.0.0": {
         "type": "package",
         "dependencies": {
@@ -18163,10 +18527,39 @@
         "type": "package",
         "build": {
           "build/Microsoft.NET.ILLink.Tasks.props": {}
+        }
+      },
+      "Plugin.BLE/3.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0-maccatalyst18.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0-maccatalyst18.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
         }
       }
     },
     "net10.0-maccatalyst/android-arm64": {
+      "CommunityToolkit.Mvvm/8.4.2": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/CommunityToolkit.Mvvm.targets": {}
+        }
+      },
       "Microsoft.Extensions.Configuration/10.0.0": {
         "type": "package",
         "dependencies": {
@@ -18628,10 +19021,39 @@
         "type": "package",
         "build": {
           "build/Microsoft.NET.ILLink.Tasks.props": {}
+        }
+      },
+      "Plugin.BLE/3.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0-maccatalyst18.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0-maccatalyst18.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
         }
       }
     },
     "net10.0-maccatalyst/android-x64": {
+      "CommunityToolkit.Mvvm/8.4.2": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/CommunityToolkit.Mvvm.targets": {}
+        }
+      },
       "Microsoft.Extensions.Configuration/10.0.0": {
         "type": "package",
         "dependencies": {
@@ -19093,10 +19515,39 @@
         "type": "package",
         "build": {
           "build/Microsoft.NET.ILLink.Tasks.props": {}
+        }
+      },
+      "Plugin.BLE/3.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0-maccatalyst18.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0-maccatalyst18.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
         }
       }
     },
     "net10.0-maccatalyst/iossimulator-x64": {
+      "CommunityToolkit.Mvvm/8.4.2": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/CommunityToolkit.Mvvm.targets": {}
+        }
+      },
       "Microsoft.Extensions.Configuration/10.0.0": {
         "type": "package",
         "dependencies": {
@@ -19558,10 +20009,39 @@
         "type": "package",
         "build": {
           "build/Microsoft.NET.ILLink.Tasks.props": {}
+        }
+      },
+      "Plugin.BLE/3.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0-maccatalyst18.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0-maccatalyst18.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
         }
       }
     },
     "net10.0-maccatalyst/maccatalyst-x64": {
+      "CommunityToolkit.Mvvm/8.4.2": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/CommunityToolkit.Mvvm.targets": {}
+        }
+      },
       "Microsoft.Extensions.Configuration/10.0.0": {
         "type": "package",
         "dependencies": {
@@ -20023,10 +20503,39 @@
         "type": "package",
         "build": {
           "build/Microsoft.NET.ILLink.Tasks.props": {}
+        }
+      },
+      "Plugin.BLE/3.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0-maccatalyst18.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0-maccatalyst18.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
         }
       }
     },
     "net10.0-maccatalyst/win-x64": {
+      "CommunityToolkit.Mvvm/8.4.2": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/CommunityToolkit.Mvvm.targets": {}
+        }
+      },
       "Microsoft.Extensions.Configuration/10.0.0": {
         "type": "package",
         "dependencies": {
@@ -20489,9 +20998,38 @@
         "build": {
           "build/Microsoft.NET.ILLink.Tasks.props": {}
         }
+      },
+      "Plugin.BLE/3.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0-maccatalyst18.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0-maccatalyst18.0/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
+        }
       }
     },
     "net10.0-windows10.0.19041.0": {
+      "CommunityToolkit.Mvvm/8.4.2": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0-windows10.0.17763/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0-windows10.0.17763/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/CommunityToolkit.Mvvm.targets": {}
+        }
+      },
       "Microsoft.Extensions.Configuration/10.0.0": {
         "type": "package",
         "dependencies": {
@@ -21205,9 +21743,38 @@
             "rid": "win-x86"
           }
         }
+      },
+      "Plugin.BLE/3.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0-windows10.0.19041/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0-windows10.0.19041/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
+        }
       }
     },
     "net10.0-windows10.0.19041.0/android-arm64": {
+      "CommunityToolkit.Mvvm/8.4.2": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0-windows10.0.17763/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0-windows10.0.17763/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/CommunityToolkit.Mvvm.targets": {}
+        }
+      },
       "Microsoft.Extensions.Configuration/10.0.0": {
         "type": "package",
         "dependencies": {
@@ -21858,10 +22425,39 @@
         "build": {
           "buildTransitive/Microsoft.WindowsAppSDK.props": {},
           "buildTransitive/Microsoft.WindowsAppSDK.targets": {}
+        }
+      },
+      "Plugin.BLE/3.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0-windows10.0.19041/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0-windows10.0.19041/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
         }
       }
     },
     "net10.0-windows10.0.19041.0/android-x64": {
+      "CommunityToolkit.Mvvm/8.4.2": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0-windows10.0.17763/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0-windows10.0.17763/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/CommunityToolkit.Mvvm.targets": {}
+        }
+      },
       "Microsoft.Extensions.Configuration/10.0.0": {
         "type": "package",
         "dependencies": {
@@ -22512,10 +23108,39 @@
         "build": {
           "buildTransitive/Microsoft.WindowsAppSDK.props": {},
           "buildTransitive/Microsoft.WindowsAppSDK.targets": {}
+        }
+      },
+      "Plugin.BLE/3.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0-windows10.0.19041/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0-windows10.0.19041/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
         }
       }
     },
     "net10.0-windows10.0.19041.0/iossimulator-x64": {
+      "CommunityToolkit.Mvvm/8.4.2": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0-windows10.0.17763/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0-windows10.0.17763/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/CommunityToolkit.Mvvm.targets": {}
+        }
+      },
       "Microsoft.Extensions.Configuration/10.0.0": {
         "type": "package",
         "dependencies": {
@@ -23166,10 +23791,39 @@
         "build": {
           "buildTransitive/Microsoft.WindowsAppSDK.props": {},
           "buildTransitive/Microsoft.WindowsAppSDK.targets": {}
+        }
+      },
+      "Plugin.BLE/3.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0-windows10.0.19041/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0-windows10.0.19041/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
         }
       }
     },
     "net10.0-windows10.0.19041.0/maccatalyst-x64": {
+      "CommunityToolkit.Mvvm/8.4.2": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0-windows10.0.17763/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0-windows10.0.17763/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/CommunityToolkit.Mvvm.targets": {}
+        }
+      },
       "Microsoft.Extensions.Configuration/10.0.0": {
         "type": "package",
         "dependencies": {
@@ -23821,9 +24475,38 @@
           "buildTransitive/Microsoft.WindowsAppSDK.props": {},
           "buildTransitive/Microsoft.WindowsAppSDK.targets": {}
         }
+      },
+      "Plugin.BLE/3.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0-windows10.0.19041/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0-windows10.0.19041/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
+        }
       }
     },
     "net10.0-windows10.0.19041.0/win-x64": {
+      "CommunityToolkit.Mvvm/8.4.2": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0-windows10.0.17763/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0-windows10.0.17763/CommunityToolkit.Mvvm.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/CommunityToolkit.Mvvm.targets": {}
+        }
+      },
       "Microsoft.Extensions.Configuration/10.0.0": {
         "type": "package",
         "dependencies": {
@@ -24485,10 +25168,63 @@
           "buildTransitive/Microsoft.WindowsAppSDK.props": {},
           "buildTransitive/Microsoft.WindowsAppSDK.targets": {}
         }
+      },
+      "Plugin.BLE/3.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0-windows10.0.19041/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0-windows10.0.19041/Plugin.BLE.dll": {
+            "related": ".pdb;.xml"
+          }
+        }
       }
     }
   },
   "libraries": {
+    "CommunityToolkit.Mvvm/8.4.2": {
+      "sha512": "WadCzGEc2U+3e20avRLng4qNtt4zoOGWrdUISqJWrHe3/FSnrYjuM5Sb4yQb09LhkBXrrI4Zt3dLKgRMbItsrg==",
+      "type": "package",
+      "path": "communitytoolkit.mvvm/8.4.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "License.md",
+        "ThirdPartyNotices.txt",
+        "analyzers/dotnet/roslyn4.0/cs/CommunityToolkit.Mvvm.CodeFixers.dll",
+        "analyzers/dotnet/roslyn4.0/cs/CommunityToolkit.Mvvm.SourceGenerators.dll",
+        "analyzers/dotnet/roslyn4.12/cs/CommunityToolkit.Mvvm.CodeFixers.dll",
+        "analyzers/dotnet/roslyn4.12/cs/CommunityToolkit.Mvvm.SourceGenerators.dll",
+        "analyzers/dotnet/roslyn4.3/cs/CommunityToolkit.Mvvm.CodeFixers.dll",
+        "analyzers/dotnet/roslyn4.3/cs/CommunityToolkit.Mvvm.SourceGenerators.dll",
+        "analyzers/dotnet/roslyn5.0/cs/CommunityToolkit.Mvvm.CodeFixers.dll",
+        "analyzers/dotnet/roslyn5.0/cs/CommunityToolkit.Mvvm.SourceGenerators.dll",
+        "build/CommunityToolkit.Mvvm.FeatureSwitches.targets",
+        "build/CommunityToolkit.Mvvm.SourceGenerators.targets",
+        "build/CommunityToolkit.Mvvm.Windows.targets",
+        "build/CommunityToolkit.Mvvm.WindowsSdk.targets",
+        "build/CommunityToolkit.Mvvm.targets",
+        "buildTransitive/CommunityToolkit.Mvvm.FeatureSwitches.targets",
+        "buildTransitive/CommunityToolkit.Mvvm.SourceGenerators.targets",
+        "buildTransitive/CommunityToolkit.Mvvm.Windows.targets",
+        "buildTransitive/CommunityToolkit.Mvvm.WindowsSdk.targets",
+        "buildTransitive/CommunityToolkit.Mvvm.targets",
+        "communitytoolkit.mvvm.8.4.2.nupkg.sha512",
+        "communitytoolkit.mvvm.nuspec",
+        "lib/net8.0-windows10.0.17763/CommunityToolkit.Mvvm.dll",
+        "lib/net8.0-windows10.0.17763/CommunityToolkit.Mvvm.xml",
+        "lib/net8.0/CommunityToolkit.Mvvm.dll",
+        "lib/net8.0/CommunityToolkit.Mvvm.xml",
+        "lib/netstandard2.0/CommunityToolkit.Mvvm.dll",
+        "lib/netstandard2.0/CommunityToolkit.Mvvm.xml",
+        "lib/netstandard2.1/CommunityToolkit.Mvvm.dll",
+        "lib/netstandard2.1/CommunityToolkit.Mvvm.xml"
+      ]
+    },
     "GoogleGson/2.13.1.1": {
       "sha512": "1yD5W1UPmgEEHrqdtVJI7330h1foGWiehVC07er3NiZxJPMmphTmPz2kuSXawIo8xmeIvd92WpiTOEmYpk6mzQ==",
       "type": "package",
@@ -26586,6 +27322,62 @@
         "tools/net6.0/System.Text.Json.dll",
         "tools/x64/GenXbf.dll",
         "tools/x86/GenXbf.dll"
+      ]
+    },
+    "Plugin.BLE/3.2.1": {
+      "sha512": "76XxEHkmbKAsAEHGZC/U70nzXyaRLwG/tbFLRuvg/l+k8xVsPIeQj1AptwIrPKA/TVNTEvUeTw1kmNu11vOZyA==",
+      "type": "package",
+      "path": "plugin.ble/3.2.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "icon_small.png",
+        "lib/monoandroid13.0/Plugin.BLE.dll",
+        "lib/monoandroid13.0/Plugin.BLE.pdb",
+        "lib/monoandroid13.0/Plugin.BLE.xml",
+        "lib/net8.0-android34.0/Plugin.BLE.dll",
+        "lib/net8.0-android34.0/Plugin.BLE.pdb",
+        "lib/net8.0-android34.0/Plugin.BLE.xml",
+        "lib/net8.0-ios18.0/Plugin.BLE.dll",
+        "lib/net8.0-ios18.0/Plugin.BLE.pdb",
+        "lib/net8.0-ios18.0/Plugin.BLE.xml",
+        "lib/net8.0-maccatalyst18.0/Plugin.BLE.dll",
+        "lib/net8.0-maccatalyst18.0/Plugin.BLE.pdb",
+        "lib/net8.0-maccatalyst18.0/Plugin.BLE.xml",
+        "lib/net8.0-windows10.0.19041/Plugin.BLE.dll",
+        "lib/net8.0-windows10.0.19041/Plugin.BLE.pdb",
+        "lib/net8.0-windows10.0.19041/Plugin.BLE.xml",
+        "lib/net8.0-windows10.0.22000/Plugin.BLE.dll",
+        "lib/net8.0-windows10.0.22000/Plugin.BLE.pdb",
+        "lib/net8.0-windows10.0.22000/Plugin.BLE.xml",
+        "lib/net9.0-android35.0/Plugin.BLE.dll",
+        "lib/net9.0-android35.0/Plugin.BLE.pdb",
+        "lib/net9.0-android35.0/Plugin.BLE.xml",
+        "lib/net9.0-ios18.0/Plugin.BLE.dll",
+        "lib/net9.0-ios18.0/Plugin.BLE.pdb",
+        "lib/net9.0-ios18.0/Plugin.BLE.xml",
+        "lib/net9.0-maccatalyst18.0/Plugin.BLE.dll",
+        "lib/net9.0-maccatalyst18.0/Plugin.BLE.pdb",
+        "lib/net9.0-maccatalyst18.0/Plugin.BLE.xml",
+        "lib/net9.0-windows10.0.19041/Plugin.BLE.dll",
+        "lib/net9.0-windows10.0.19041/Plugin.BLE.pdb",
+        "lib/net9.0-windows10.0.19041/Plugin.BLE.xml",
+        "lib/netstandard2.0/Plugin.BLE.dll",
+        "lib/netstandard2.0/Plugin.BLE.pdb",
+        "lib/netstandard2.0/Plugin.BLE.xml",
+        "lib/uap10.0.17763/Plugin.BLE.dll",
+        "lib/uap10.0.17763/Plugin.BLE.pdb",
+        "lib/uap10.0.17763/Plugin.BLE.pri",
+        "lib/uap10.0.17763/Plugin.BLE.xml",
+        "lib/xamarinios10/Plugin.BLE.dll",
+        "lib/xamarinios10/Plugin.BLE.pdb",
+        "lib/xamarinios10/Plugin.BLE.xml",
+        "lib/xamarinmac20/Plugin.BLE.dll",
+        "lib/xamarinmac20/Plugin.BLE.pdb",
+        "lib/xamarinmac20/Plugin.BLE.xml",
+        "plugin.ble.3.2.1.nupkg.sha512",
+        "plugin.ble.nuspec"
       ]
     },
     "Xamarin.Android.Glide/4.16.0.14": {
@@ -28969,23 +29761,31 @@
   },
   "projectFileDependencyGroups": {
     "net10.0-android": [
+      "CommunityToolkit.Mvvm >= 8.4.2",
       "Microsoft.Extensions.Logging.Debug >= 10.0.0",
       "Microsoft.Maui.Controls >= 10.0.20",
-      "Microsoft.NET.ILLink.Tasks >= 10.0.12"
+      "Microsoft.NET.ILLink.Tasks >= 10.0.12",
+      "Plugin.BLE >= 3.2.1"
     ],
     "net10.0-ios": [
+      "CommunityToolkit.Mvvm >= 8.4.2",
       "Microsoft.Extensions.Logging.Debug >= 10.0.0",
       "Microsoft.Maui.Controls >= 10.0.20",
-      "Microsoft.NET.ILLink.Tasks >= 10.0.12"
+      "Microsoft.NET.ILLink.Tasks >= 10.0.12",
+      "Plugin.BLE >= 3.2.1"
     ],
     "net10.0-maccatalyst": [
+      "CommunityToolkit.Mvvm >= 8.4.2",
       "Microsoft.Extensions.Logging.Debug >= 10.0.0",
       "Microsoft.Maui.Controls >= 10.0.20",
-      "Microsoft.NET.ILLink.Tasks >= 10.0.12"
+      "Microsoft.NET.ILLink.Tasks >= 10.0.12",
+      "Plugin.BLE >= 3.2.1"
     ],
     "net10.0-windows10.0.19041.0": [
+      "CommunityToolkit.Mvvm >= 8.4.2",
       "Microsoft.Extensions.Logging.Debug >= 10.0.0",
-      "Microsoft.Maui.Controls >= 10.0.20"
+      "Microsoft.Maui.Controls >= 10.0.20",
+      "Plugin.BLE >= 3.2.1"
     ]
   },
   "packageFolders": {
@@ -29060,6 +29860,10 @@
         "framework": "net10.0-android36.0",
         "targetAlias": "net10.0-android",
         "dependencies": {
+          "CommunityToolkit.Mvvm": {
+            "target": "Package",
+            "version": "[8.4.2, )"
+          },
           "Microsoft.Extensions.Logging.Debug": {
             "target": "Package",
             "version": "[10.0.0, )"
@@ -29073,6 +29877,10 @@
             "target": "Package",
             "version": "[10.0.12, )",
             "autoReferenced": true
+          },
+          "Plugin.BLE": {
+            "target": "Package",
+            "version": "[3.2.1, )"
           }
         },
         "imports": [
@@ -29377,6 +30185,10 @@
         "framework": "net10.0-ios26.5",
         "targetAlias": "net10.0-ios",
         "dependencies": {
+          "CommunityToolkit.Mvvm": {
+            "target": "Package",
+            "version": "[8.4.2, )"
+          },
           "Microsoft.Extensions.Logging.Debug": {
             "target": "Package",
             "version": "[10.0.0, )"
@@ -29390,6 +30202,10 @@
             "target": "Package",
             "version": "[10.0.12, )",
             "autoReferenced": true
+          },
+          "Plugin.BLE": {
+            "target": "Package",
+            "version": "[3.2.1, )"
           }
         },
         "imports": [
@@ -29694,6 +30510,10 @@
         "framework": "net10.0-maccatalyst26.5",
         "targetAlias": "net10.0-maccatalyst",
         "dependencies": {
+          "CommunityToolkit.Mvvm": {
+            "target": "Package",
+            "version": "[8.4.2, )"
+          },
           "Microsoft.Extensions.Logging.Debug": {
             "target": "Package",
             "version": "[10.0.0, )"
@@ -29707,6 +30527,10 @@
             "target": "Package",
             "version": "[10.0.12, )",
             "autoReferenced": true
+          },
+          "Plugin.BLE": {
+            "target": "Package",
+            "version": "[3.2.1, )"
           }
         },
         "imports": [
@@ -30012,6 +30836,10 @@
         "framework": "net10.0-windows10.0.19041",
         "targetAlias": "net10.0-windows10.0.19041.0",
         "dependencies": {
+          "CommunityToolkit.Mvvm": {
+            "target": "Package",
+            "version": "[8.4.2, )"
+          },
           "Microsoft.Extensions.Logging.Debug": {
             "target": "Package",
             "version": "[10.0.0, )"
@@ -30019,6 +30847,10 @@
           "Microsoft.Maui.Controls": {
             "target": "Package",
             "version": "[10.0.20, )"
+          },
+          "Plugin.BLE": {
+            "target": "Package",
+            "version": "[3.2.1, )"
           }
         },
         "imports": [
