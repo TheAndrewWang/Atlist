@@ -18,7 +18,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Atlist")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+e3224ba3284d65b21109c7dc085d4e48e500009c")]
 [assembly: System.Reflection.AssemblyProductAttribute("Atlist")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Atlist")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -516,3 +516,6 @@ C:\Users\User\source\repos\Atlist\Atlist\obj\Debug\net10.0-windows10.0.19041.0\w
 C:\Users\User\source\repos\Atlist\Atlist\obj\Debug\net10.0-windows10.0.19041.0\win-x64\qualifiers.txt
 C:\Users\User\source\repos\Atlist\Atlist\obj\Debug\net10.0-windows10.0.19041.0\win-x64\qualifiers.txt.intermediate
 C:\Users\User\source\repos\Atlist\Atlist\obj\Debug\net10.0-windows10.0.19041.0\win-x64\MultipleQualifiersPerDimensionFound.txt
+C:\Users\User\source\repos\Atlist\Atlist\obj\Debug\net10.0-windows10.0.19041.0\win-x64\Atlist.sourcelink.json
+C:\Users\User\source\repos\Atlist\Atlist\bin\Debug\net10.0-windows10.0.19041.0\win-x64\CommunityToolkit.Mvvm.dll
+C:\Users\User\source\repos\Atlist\Atlist\bin\Debug\net10.0-windows10.0.19041.0\win-x64\Plugin.BLE.dll
