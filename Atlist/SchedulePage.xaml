@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Atlist.ViewModels"
+             x:Class="Atlist.Views.SchedulePage"
+             x:DataType="vm:ScheduleViewModel"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{StaticResource Ground}">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Row 0: title, sync status, add button -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" ColumnSpacing="12" Padding="20,28,20,8">
+            <VerticalStackLayout Spacing="4" VerticalOptions="End">
+                <Label Text="Schedule" Style="{StaticResource PageTitle}" />
+                <Label Text="{Binding SyncText}" Style="{StaticResource Hint}" FontSize="15" />
+            </VerticalStackLayout>
+            <Button Grid.Column="1"
+                    Text="+"
+                    Command="{Binding AddCommand}"
+                    BackgroundColor="{StaticResource Accent}"
+                    TextColor="White"
+                    FontFamily="Atkinson"
+                    FontSize="28"
+                    Padding="0"
+                    CornerRadius="14"
+                    WidthRequest="48"
+                    HeightRequest="48"
+                    VerticalOptions="End"
+                    SemanticProperties.Description="Add scheduled message" />
+        </Grid>
+
+        <RefreshView Grid.Row="1"
+                     IsRefreshing="{Binding IsRefreshing}"
+                     Command="{Binding RefreshCommand}"
+                     RefreshColor="{StaticResource Accent}">
+            <ScrollView>
+                <VerticalStackLayout Padding="20,8,20,24" Spacing="10">
+
+                    <Label Text="EVERY DAY" Style="{StaticResource SectionLabel}" />
+
+                    <Label IsVisible="{Binding HasItems, Converter={StaticResource InvertBool}}"
+                           Text="Nothing scheduled yet. Tap + to add a message a device shows by itself every day, like a medication reminder at 8:00 AM."
+                           Style="{StaticResource Hint}"
+                           FontSize="15"
+                           LineHeight="1.4" />
+
+                    <VerticalStackLayout Spacing="10" BindableLayout.ItemsSource="{Binding Items}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="vm:ScheduleRow">
+                                <Border Style="{StaticResource Card}" Padding="14,12">
+                                    <Grid ColumnDefinitions="64,*,Auto" ColumnSpacing="12">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ScheduleViewModel}}, Path=EditCommand, x:DataType=vm:ScheduleViewModel}"
+                                                CommandParameter="{Binding .}" />
+                                        </Grid.GestureRecognizers>
+
+                                        <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                                            <Label Text="{Binding Clock}" Style="{StaticResource BodyBold}" FontSize="17" />
+                                            <Label Text="{Binding AmPm}" Style="{StaticResource Hint}" FontSize="13" />
+                                        </VerticalStackLayout>
+
+                                        <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                            <Label Text="{Binding Title}" Style="{StaticResource BodyBold}" />
+                                            <Label Text="{Binding Subtitle}" Style="{StaticResource Hint}" />
+                                        </VerticalStackLayout>
+
+                                        <CheckBox Grid.Column="2"
+                                                  IsChecked="{Binding IsEnabled}"
+                                                  Color="{StaticResource Accent}"
+                                                  VerticalOptions="Center">
+                                            <SemanticProperties.Description>
+                                                <MultiBinding StringFormat="{}{0} {1} {2} on">
+                                                    <Binding Path="Clock" />
+                                                    <Binding Path="AmPm" />
+                                                    <Binding Path="Title" />
+                                                </MultiBinding>
+                                            </SemanticProperties.Description>
+                                        </CheckBox>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+
+                    <Label Text="RESET CYCLES" Style="{StaticResource SectionLabel}" Margin="0,8,0,0" />
+
+                    <Border Style="{StaticResource Card}" Padding="0">
+                        <VerticalStackLayout BindableLayout.ItemsSource="{Binding ResetCycles}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="vm:ResetRow">
+                                    <Grid ColumnDefinitions="*,Auto"
+                                          MinimumHeightRequest="52"
+                                          Padding="14,0">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ScheduleViewModel}}, Path=OpenDeviceCommand, x:DataType=vm:ScheduleViewModel}"
+                                                CommandParameter="{Binding .}" />
+                                        </Grid.GestureRecognizers>
+                                        <Label Text="{Binding Name}" Style="{StaticResource BodyBold}" VerticalOptions="Center" />
+                                        <Label Grid.Column="1" Text="{Binding CycleText}" Style="{StaticResource Hint}" FontSize="15" VerticalOptions="Center" />
+                                        <BoxView Grid.ColumnSpan="2" HeightRequest="1" Color="{StaticResource Divider}" VerticalOptions="End" Margin="-14,0" />
+                                    </Grid>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+            </ScrollView>
+        </RefreshView>
+    </Grid>
+</ContentPage>

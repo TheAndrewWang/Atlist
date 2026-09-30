@@ -18,6 +18,13 @@ public interface IChecklistBleService
     Task StopScanAsync();
 
     Task ConnectAsync(IDevice device, CancellationToken ct = default);
+
+    /// <summary>
+    /// Reconnects to a device paired earlier, using only its saved Id (no scan needed).
+    /// Throws if the device doesn't answer before <paramref name="ct"/> is cancelled.
+    /// </summary>
+    Task<IDevice> ConnectKnownAsync(Guid deviceId, CancellationToken ct = default);
+
     Task DisconnectAsync(IDevice device);
 
     /// <summary>Sends one line of text and waits for the device's one-line reply.</summary>
@@ -88,7 +95,33 @@ public class ChecklistBleService : IChecklistBleService
     public async Task ConnectAsync(IDevice device, CancellationToken ct = default)
     {
         await _adapter.ConnectToDeviceAsync(device, cancellationToken: ct);
+        await SetUpCharacteristicAsync(device, ct);
+    }
 
+    public async Task<IDevice> ConnectKnownAsync(Guid deviceId, CancellationToken ct = default)
+    {
+        var device = await _adapter.ConnectToKnownDeviceAsync(
+            deviceId,
+            new ConnectParameters(autoConnect: false, forceBleTransport: true),
+            ct);
+
+        try
+        {
+            await SetUpCharacteristicAsync(device, ct);
+        }
+        catch
+        {
+            // Connected but the characteristic setup failed: don't leave a half-open connection.
+            try { await _adapter.DisconnectDeviceAsync(device); } catch { }
+            throw;
+        }
+
+        return device;
+    }
+
+    /// <summary>Finds the HM-10 characteristic and starts listening for replies.</summary>
+    private async Task SetUpCharacteristicAsync(IDevice device, CancellationToken ct)
+    {
         var service = await device.GetServiceAsync(ServiceUuid, ct)
             ?? throw new InvalidOperationException("This device doesn't have the checklist service. Is it an HM-10?");
 

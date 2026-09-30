@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Atlist.ViewModels"
+             x:Class="Atlist.Views.QuickMessagesPage"
+             x:DataType="vm:QuickMessagesViewModel"
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
+             BackgroundColor="{StaticResource Ground}">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- Row 0: back link, title, hint -->
+        <VerticalStackLayout Grid.Row="0" Padding="20,20,20,8" Spacing="8">
+            <Button Text="‹  Send a message"
+                    Style="{StaticResource BackLink}"
+                    Command="{Binding BackCommand}"
+                    SemanticProperties.Description="Back to Send a message" />
+            <Label Text="Quick messages" Style="{StaticResource PageTitle}" />
+            <Label Text="Tap one to load it into the message screen. Swipe left to delete."
+                   Style="{StaticResource Hint}" FontSize="15" />
+        </VerticalStackLayout>
+
+        <!-- Row 1: saved messages, grouped -->
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Groups}"
+                        IsGrouped="True"
+                        SelectionMode="None"
+                        Margin="20,0">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.GroupHeaderTemplate>
+                <DataTemplate x:DataType="vm:QuickMessageGroup">
+                    <Label Text="{Binding Title}" Style="{StaticResource SectionLabel}" Margin="0,12,0,2" />
+                </DataTemplate>
+            </CollectionView.GroupHeaderTemplate>
+
+            <CollectionView.EmptyView>
+                <Label Text="No quick messages yet. Add one below."
+                       Style="{StaticResource Hint}" FontSize="15" Margin="0,16" />
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="vm:QuickMessageRow">
+                    <SwipeView>
+                        <SwipeView.RightItems>
+                            <SwipeItems>
+                                <SwipeItem Text="Delete"
+                                           BackgroundColor="{StaticResource Danger}"
+                                           Command="{Binding Source={RelativeSource AncestorType={x:Type vm:QuickMessagesViewModel}}, Path=DeleteCommand, x:DataType=vm:QuickMessagesViewModel}"
+                                           CommandParameter="{Binding .}" />
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+
+                        <Border Style="{StaticResource Card}"
+                                Padding="12,10"
+                                SemanticProperties.Description="{Binding Description}">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:QuickMessagesViewModel}}, Path=UseCommand, x:DataType=vm:QuickMessagesViewModel}"
+                                    CommandParameter="{Binding .}" />
+                            </Border.GestureRecognizers>
+
+                            <Grid ColumnDefinitions="170,*" ColumnSpacing="12">
+                                <Border Grid.Column="0"
+                                        BackgroundColor="{StaticResource LcdGround}"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 6"
+                                        Padding="10,6">
+                                    <VerticalStackLayout>
+                                        <Label Text="{Binding Line1}" FontFamily="LcdFont" FontSize="20" TextColor="{Binding PreviewColor}" />
+                                        <Label Text="{Binding Line2}" FontFamily="LcdFont" FontSize="20" TextColor="{Binding PreviewColor}" />
+                                    </VerticalStackLayout>
+                                </Border>
+                                <Label Grid.Column="1"
+                                       Text="{Binding UsedText}"
+                                       Style="{StaticResource Hint}"
+                                       HorizontalOptions="End"
+                                       VerticalOptions="Center" />
+                            </Grid>
+                        </Border>
+                    </SwipeView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Row 2: add -->
+        <Border Grid.Row="2"
+                Margin="20,12,20,24"
+                Stroke="{StaticResource Accent}"
+                StrokeThickness="2"
+                StrokeDashArray="4,3"
+                StrokeShape="RoundRectangle 14"
+                MinimumHeightRequest="52"
+                SemanticProperties.Description="New quick message">
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding AddCommand}" />
+            </Border.GestureRecognizers>
+            <Label Text="+ New quick message"
+                   FontFamily="AtkinsonBold"
+                   FontSize="17"
+                   TextColor="{StaticResource Accent}"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center" />
+        </Border>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Atlist.ViewModels"
+             xmlns:models="clr-namespace:Atlist.Models"
+             x:Class="Atlist.Views.ScheduleEditPage"
+             x:DataType="vm:ScheduleEditViewModel"
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
+             BackgroundColor="{StaticResource Ground}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20,20,20,24" Spacing="14">
+
+            <Button Text="‹  Schedule"
+                    Style="{StaticResource BackLink}"
+                    Command="{Binding CancelCommand}"
+                    SemanticProperties.Description="Back to Schedule without saving" />
+            <Label Text="{Binding PageTitle}" Style="{StaticResource PageTitle}" />
+
+            <!-- Time -->
+            <VerticalStackLayout Spacing="6">
+                <Label Text="EVERY DAY AT" Style="{StaticResource SectionLabel}" />
+                <Border Style="{StaticResource Card}" Padding="12,4" HorizontalOptions="Start">
+                    <TimePicker Time="{Binding Time}"
+                                Format="h:mm tt"
+                                FontFamily="AtkinsonBold"
+                                FontSize="20"
+                                TextColor="{StaticResource Ink}"
+                                MinimumHeightRequest="44"
+                                SemanticProperties.Description="Time of day" />
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Lines -->
+            <VerticalStackLayout Spacing="6">
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Text="Top line" Style="{StaticResource BodyBold}" FontSize="15" />
+                    <Label Grid.Column="1" Text="{Binding Count1}" Style="{StaticResource Hint}" />
+                </Grid>
+                <Entry Text="{Binding Line1}" Style="{StaticResource Field}" MaxLength="16" Placeholder="TAKE MEDS"
+                       SemanticProperties.Description="Top line, up to 16 characters" />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="6">
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Text="Bottom line" Style="{StaticResource BodyBold}" FontSize="15" />
+                    <Label Grid.Column="1" Text="{Binding Count2}" Style="{StaticResource Hint}" />
+                </Grid>
+                <Entry Text="{Binding Line2}" Style="{StaticResource Field}" MaxLength="16" Placeholder="With breakfast"
+                       SemanticProperties.Description="Bottom line, up to 16 characters" />
+            </VerticalStackLayout>
+
+            <!-- Device -->
+            <VerticalStackLayout Spacing="8">
+                <Label Text="SHOW ON" Style="{StaticResource SectionLabel}" />
+                <FlexLayout Wrap="Wrap" BindableLayout.ItemsSource="{Binding Targets}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="models:Choice">
+                            <Button Text="{Binding Label}"
+                                    Style="{StaticResource Chip}"
+                                    Margin="0,0,8,8"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ScheduleEditViewModel}}, Path=SelectTargetCommand, x:DataType=vm:ScheduleEditViewModel}"
+                                    CommandParameter="{Binding .}">
+                                <Button.Triggers>
+                                    <DataTrigger TargetType="Button" Binding="{Binding IsSelected}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="{StaticResource Accent}" />
+                                        <Setter Property="TextColor" Value="White" />
+                                    </DataTrigger>
+                                </Button.Triggers>
+                            </Button>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </FlexLayout>
+            </VerticalStackLayout>
+
+            <HorizontalStackLayout Spacing="8" MinimumHeightRequest="44">
+                <CheckBox IsChecked="{Binding Beep}" Color="{StaticResource Accent}" VerticalOptions="Center"
+                          SemanticProperties.Description="Beep when it appears" />
+                <Label Text="Beep when it appears" Style="{StaticResource Body}" VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ToggleBeepCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </HorizontalStackLayout>
+
+            <Button Text="Save"
+                    Command="{Binding SaveCommand}"
+                    Style="{StaticResource FilledButton}"
+                    FontSize="18"
+                    CornerRadius="14"
+                    MinimumHeightRequest="54" />
+
+            <Button Text="Delete this message"
+                    IsVisible="{Binding CanDelete}"
+                    Command="{Binding DeleteCommand}"
+                    Style="{StaticResource DangerButton}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

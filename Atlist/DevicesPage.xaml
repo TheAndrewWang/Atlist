@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Atlist.ViewModels"
+             xmlns:models="clr-namespace:Atlist.Models"
+             x:Class="Atlist.Views.DevicesPage"
+             x:DataType="vm:DevicesViewModel"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{StaticResource Ground}">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Row 0: title, "2 of 3 in range", add-device button -->
+        <Grid Grid.Row="0"
+              ColumnDefinitions="*,Auto"
+              ColumnSpacing="12"
+              Padding="20,28,20,12">
+            <VerticalStackLayout Grid.Column="0" Spacing="4" VerticalOptions="End">
+                <Label Text="My devices"
+                       FontFamily="FrauncesSemiBold"
+                       FontSize="30"
+                       TextColor="{StaticResource Ink}"
+                       SemanticProperties.HeadingLevel="Level1" />
+                <Label Text="{Binding SummaryText}"
+                       FontFamily="Atkinson"
+                       FontSize="15"
+                       TextColor="{StaticResource Muted}" />
+            </VerticalStackLayout>
+
+            <Button Grid.Column="1"
+                    Text="+"
+                    Command="{Binding AddDeviceCommand}"
+                    BackgroundColor="{StaticResource Accent}"
+                    TextColor="White"
+                    FontFamily="Atkinson"
+                    FontSize="28"
+                    Padding="0"
+                    CornerRadius="14"
+                    WidthRequest="48"
+                    HeightRequest="48"
+                    VerticalOptions="End"
+                    SemanticProperties.Description="Add a device" />
+        </Grid>
+
+        <!-- Row 1: one card per paired device. Pull down to check them all again. -->
+        <RefreshView Grid.Row="1"
+                     IsRefreshing="{Binding IsRefreshing}"
+                     Command="{Binding RefreshCommand}"
+                     RefreshColor="{StaticResource Accent}">
+            <CollectionView ItemsSource="{Binding Devices}"
+                            SelectionMode="None"
+                            Margin="20,4,20,0">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="14" />
+                </CollectionView.ItemsLayout>
+
+                <CollectionView.Footer>
+                    <BoxView HeightRequest="16" Color="Transparent" />
+                </CollectionView.Footer>
+
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout Spacing="14" Padding="0,24">
+                        <Label Text="No devices yet. Pair a checklist device to see what its screen shows and send it messages."
+                               FontFamily="Atkinson"
+                               FontSize="16"
+                               LineHeight="1.4"
+                               TextColor="{StaticResource Muted}" />
+                        <Button Text="Connect a device"
+                                Style="{StaticResource FilledButton}"
+                                Command="{Binding AddDeviceCommand}" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:DeviceCard">
+                        <Border Style="{StaticResource Card}"
+                                StrokeShape="RoundRectangle 16"
+                                Padding="16">
+                            <VerticalStackLayout Spacing="12">
+
+                                <!-- Name, place, and the In range / Out of range pill -->
+                                <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+                                    <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
+                                        <Label Text="{Binding Title}"
+                                               FontFamily="AtkinsonBold"
+                                               FontSize="19"
+                                               TextColor="{StaticResource Ink}" />
+                                        <Label Text="{Binding Subtitle}"
+                                               FontFamily="Atkinson"
+                                               FontSize="14"
+                                               TextColor="{StaticResource Muted}" />
+                                    </VerticalStackLayout>
+
+                                    <ActivityIndicator Grid.Column="1"
+                                                       IsVisible="{Binding IsChecking}"
+                                                       IsRunning="{Binding IsChecking}"
+                                                       Color="{StaticResource Muted}"
+                                                       WidthRequest="18" HeightRequest="18"
+                                                       VerticalOptions="Center" />
+
+                                    <Border Grid.Column="2"
+                                            BackgroundColor="{Binding PillBackground}"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 999"
+                                            Padding="11,5"
+                                            VerticalOptions="Center">
+                                        <Label Text="{Binding StatusText}"
+                                               FontFamily="AtkinsonBold"
+                                               FontSize="13"
+                                               TextColor="{Binding PillText}" />
+                                    </Border>
+                                </Grid>
+
+                                <!-- Mirror of the device's LCD, in its backlight color -->
+                                <Border IsVisible="{Binding ShowScreen}"
+                                        BackgroundColor="{StaticResource LcdGround}"
+                                        Stroke="{StaticResource LcdBezel}"
+                                        StrokeThickness="3"
+                                        StrokeShape="RoundRectangle 8"
+                                        Padding="12,8">
+                                    <SemanticProperties.Description>
+                                        <MultiBinding StringFormat="Screen now shows: {0}, {1}">
+                                            <Binding Path="ScreenLine1" />
+                                            <Binding Path="ScreenLine2" />
+                                        </MultiBinding>
+                                    </SemanticProperties.Description>
+                                    <VerticalStackLayout>
+                                        <Label Text="{Binding ScreenLine1}"
+                                               FontFamily="LcdFont"
+                                               FontSize="24"
+                                               CharacterSpacing="1"
+                                               MinimumHeightRequest="25"
+                                               TextColor="{Binding ScreenColor}" />
+                                        <Label Text="{Binding ScreenLine2}"
+                                               FontFamily="LcdFont"
+                                               FontSize="24"
+                                               CharacterSpacing="1"
+                                               MinimumHeightRequest="25"
+                                               TextColor="{Binding ScreenColor}" />
+                                    </VerticalStackLayout>
+                                </Border>
+
+                                <Grid IsVisible="{Binding ShowScreen}"
+                                      ColumnDefinitions="*,Auto"
+                                      ColumnSpacing="10">
+                                    <Button Grid.Column="0"
+                                            Text="Send message"
+                                            Style="{StaticResource FilledButton}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:DevicesViewModel}}, Path=SendMessageCommand, x:DataType=vm:DevicesViewModel}"
+                                            CommandParameter="{Binding .}"
+                                            SemanticProperties.Description="{Binding Title, StringFormat='Send a message to {0}'}" />
+                                    <Button Grid.Column="1"
+                                            Text="Settings"
+                                            Style="{StaticResource OutlineButton}"
+                                            Padding="16,0"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:DevicesViewModel}}, Path=OpenSettingsCommand, x:DataType=vm:DevicesViewModel}"
+                                            CommandParameter="{Binding .}"
+                                            SemanticProperties.Description="{Binding Title, StringFormat='Settings for {0}'}" />
+                                </Grid>
+
+                                <!-- Out of range: no screen or buttons, just a note -->
+                                <Label IsVisible="{Binding IsOutOfRange}"
+                                       Text="Messages you send will wait and deliver when the phone is back in range."
+                                       FontFamily="Atkinson"
+                                       FontSize="14"
+                                       LineHeight="1.4"
+                                       TextColor="{StaticResource Muted}" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Atlist.ViewModels"
+             xmlns:models="clr-namespace:Atlist.Models"
+             x:Class="Atlist.Views.ComposePage"
+             x:DataType="vm:ComposeViewModel"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{StaticResource Ground}">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Row 0: title + link to quick messages -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Padding="20,28,20,8">
+            <Label Grid.Column="0" Text="Send a message" Style="{StaticResource PageTitle}" VerticalOptions="End" />
+            <Button Grid.Column="1"
+                    Text="Quick messages"
+                    Style="{StaticResource TextButton}"
+                    Command="{Binding OpenQuickMessagesCommand}"
+                    VerticalOptions="End" />
+        </Grid>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20,4,20,24" Spacing="14">
+
+                <!-- No devices yet -->
+                <Border Style="{StaticResource Card}" IsVisible="{Binding HasDevices, Converter={StaticResource InvertBool}}">
+                    <Label Text="Pair a device first. Messages you type here appear on its screen."
+                           Style="{StaticResource Hint}" FontSize="15" />
+                </Border>
+
+                <!-- Send to -->
+                <VerticalStackLayout Spacing="8" IsVisible="{Binding HasDevices}">
+                    <Label Text="SEND TO" Style="{StaticResource SectionLabel}" />
+                    <FlexLayout Wrap="Wrap" BindableLayout.ItemsSource="{Binding Targets}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:Choice">
+                                <Button Text="{Binding Label}"
+                                        Style="{StaticResource Chip}"
+                                        Margin="0,0,8,8"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ComposeViewModel}}, Path=SelectTargetCommand, x:DataType=vm:ComposeViewModel}"
+                                        CommandParameter="{Binding .}">
+                                    <Button.Triggers>
+                                        <DataTrigger TargetType="Button" Binding="{Binding IsSelected}" Value="True">
+                                            <Setter Property="BackgroundColor" Value="{StaticResource Accent}" />
+                                            <Setter Property="TextColor" Value="White" />
+                                        </DataTrigger>
+                                    </Button.Triggers>
+                                </Button>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </FlexLayout>
+                </VerticalStackLayout>
+
+                <!-- Live 16×2 preview -->
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="LIVE SCREEN PREVIEW" Style="{StaticResource SectionLabel}" />
+                    <Border BackgroundColor="{StaticResource LcdGround}"
+                            Stroke="{StaticResource LcdBezel}"
+                            StrokeThickness="4"
+                            StrokeShape="RoundRectangle 10"
+                            Padding="10">
+                        <SemanticProperties.Description>
+                            <MultiBinding StringFormat="Preview of the screen: {0}, {1}">
+                                <Binding Path="Line1" />
+                                <Binding Path="Line2" />
+                            </MultiBinding>
+                        </SemanticProperties.Description>
+                        <Grid RowDefinitions="30,30"
+                              ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
+                              RowSpacing="4"
+                              ColumnSpacing="2"
+                              BindableLayout.ItemsSource="{Binding PreviewCells}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="models:LcdCell">
+                                    <Grid Grid.Row="{Binding Row}"
+                                          Grid.Column="{Binding Column}"
+                                          BackgroundColor="{StaticResource LcdCell}">
+                                        <Label Text="{Binding Character}"
+                                               FontFamily="LcdFont"
+                                               FontSize="26"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center"
+                                               TextColor="{Binding Source={RelativeSource AncestorType={x:Type vm:ComposeViewModel}}, Path=PreviewColor, x:DataType=vm:ComposeViewModel}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </Grid>
+                    </Border>
+                </VerticalStackLayout>
+
+                <!-- Top line -->
+                <VerticalStackLayout Spacing="6">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="Top line" Style="{StaticResource BodyBold}" FontSize="15" />
+                        <Label Grid.Column="1" Text="{Binding Count1}" Style="{StaticResource Hint}" />
+                    </Grid>
+                    <Entry Text="{Binding Line1}"
+                           Style="{StaticResource Field}"
+                           MaxLength="16"
+                           Placeholder="Drink water"
+                           SemanticProperties.Description="Top line, up to 16 characters" />
+                </VerticalStackLayout>
+
+                <!-- Bottom line -->
+                <VerticalStackLayout Spacing="6">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="Bottom line" Style="{StaticResource BodyBold}" FontSize="15" />
+                        <Label Grid.Column="1" Text="{Binding Count2}" Style="{StaticResource Hint}" />
+                    </Grid>
+                    <Entry Text="{Binding Line2}"
+                           Style="{StaticResource Field}"
+                           MaxLength="16"
+                           Placeholder="Glass by sink"
+                           SemanticProperties.Description="Bottom line, up to 16 characters" />
+                </VerticalStackLayout>
+
+                <!-- Keep on screen -->
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="KEEP ON SCREEN" Style="{StaticResource SectionLabel}" />
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8" BindableLayout.ItemsSource="{Binding Durations}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:Choice">
+                                <Button Grid.Column="{Binding Index}"
+                                        Text="{Binding Label}"
+                                        Style="{StaticResource Chip}"
+                                        CornerRadius="10"
+                                        FontSize="14"
+                                        Padding="4,0"
+                                        MinimumHeightRequest="44"
+                                        LineBreakMode="WordWrap"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ComposeViewModel}}, Path=SelectDurationCommand, x:DataType=vm:ComposeViewModel}"
+                                        CommandParameter="{Binding .}">
+                                    <Button.Triggers>
+                                        <DataTrigger TargetType="Button" Binding="{Binding IsSelected}" Value="True">
+                                            <Setter Property="BackgroundColor" Value="{StaticResource Accent}" />
+                                            <Setter Property="TextColor" Value="White" />
+                                        </DataTrigger>
+                                    </Button.Triggers>
+                                </Button>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </Grid>
+                </VerticalStackLayout>
+
+                <!-- Beep -->
+                <HorizontalStackLayout Spacing="8" MinimumHeightRequest="44">
+                    <CheckBox IsChecked="{Binding Beep}"
+                              Color="{StaticResource Accent}"
+                              VerticalOptions="Center"
+                              SemanticProperties.Description="Gentle beep when it arrives" />
+                    <Label Text="Gentle beep when it arrives" Style="{StaticResource Body}" VerticalOptions="Center">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ToggleBeepCommand}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </HorizontalStackLayout>
+
+                <Button Text="{Binding SendLabel}"
+                        Command="{Binding SendCommand}"
+                        Style="{StaticResource FilledButton}"
+                        FontSize="18"
+                        CornerRadius="14"
+                        MinimumHeightRequest="54" />
+
+                <Label Text="{Binding StatusText}"
+                       TextColor="{Binding StatusColor}"
+                       FontFamily="AtkinsonBold"
+                       FontSize="15"
+                       HorizontalTextAlignment="Center"
+                       SemanticProperties.Description="{Binding StatusText}" />
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

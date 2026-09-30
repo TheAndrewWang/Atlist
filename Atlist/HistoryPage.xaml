@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Atlist.ViewModels"
+             xmlns:models="clr-namespace:Atlist.Models"
+             x:Class="Atlist.Views.HistoryPage"
+             x:DataType="vm:HistoryViewModel"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{StaticResource Ground}">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Row 0: title + filter chips -->
+        <VerticalStackLayout Grid.Row="0" Padding="20,28,20,8" Spacing="12">
+            <Label Text="Message history" Style="{StaticResource PageTitle}" />
+            <HorizontalStackLayout Spacing="8" BindableLayout.ItemsSource="{Binding Filters}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="models:Choice">
+                        <Button Text="{Binding Label}"
+                                Style="{StaticResource Chip}"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HistoryViewModel}}, Path=SelectFilterCommand, x:DataType=vm:HistoryViewModel}"
+                                CommandParameter="{Binding .}">
+                            <Button.Triggers>
+                                <DataTrigger TargetType="Button" Binding="{Binding IsSelected}" Value="True">
+                                    <Setter Property="BackgroundColor" Value="{StaticResource Accent}" />
+                                    <Setter Property="TextColor" Value="White" />
+                                </DataTrigger>
+                            </Button.Triggers>
+                        </Button>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+
+        <!-- Row 1: messages grouped by day -->
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Groups}"
+                        IsGrouped="True"
+                        SelectionMode="None"
+                        Margin="20,0">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.GroupHeaderTemplate>
+                <DataTemplate x:DataType="vm:HistoryGroup">
+                    <Label Text="{Binding Title}" Style="{StaticResource SectionLabel}" Margin="0,12,0,2" />
+                </DataTemplate>
+            </CollectionView.GroupHeaderTemplate>
+
+            <CollectionView.Footer>
+                <BoxView HeightRequest="16" Color="Transparent" />
+            </CollectionView.Footer>
+
+            <CollectionView.EmptyView>
+                <Label Text="{Binding EmptyText}" Style="{StaticResource Hint}" FontSize="15" Margin="0,16" />
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="vm:HistoryRow">
+                    <Border Style="{StaticResource Card}" Padding="14,12">
+                        <Border.Triggers>
+                            <!-- Messages still waiting on a device get the warm "attention" card -->
+                            <DataTrigger TargetType="Border" Binding="{Binding HasWaiting}" Value="True">
+                                <Setter Property="BackgroundColor" Value="{StaticResource WaitSoft}" />
+                                <Setter Property="Stroke" Value="{StaticResource WaitLine}" />
+                            </DataTrigger>
+                        </Border.Triggers>
+
+                        <VerticalStackLayout Spacing="6">
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                <Label Text="{Binding Title}" Style="{StaticResource BodyBold}" />
+                                <Label Grid.Column="1" Text="{Binding TimeText}" Style="{StaticResource Hint}" />
+                            </Grid>
+
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                <Label Text="{Binding ToText}" Style="{StaticResource Hint}" VerticalOptions="Center" />
+                                <Label Grid.Column="1"
+                                       Text="{Binding StatusText}"
+                                       FontFamily="AtkinsonBold"
+                                       FontSize="14"
+                                       TextColor="{StaticResource SuccessInk}"
+                                       VerticalOptions="Center" />
+                            </Grid>
+
+                            <Label IsVisible="{Binding HasWaiting}"
+                                   Text="{Binding WaitingText}"
+                                   FontFamily="Atkinson"
+                                   FontSize="14"
+                                   TextColor="{StaticResource Warn}" />
+
+                            <HorizontalStackLayout IsVisible="{Binding HasWaiting}" Spacing="8">
+                                <Button Text="Retry now"
+                                        Style="{StaticResource OutlineButton}"
+                                        FontSize="15"
+                                        CornerRadius="10"
+                                        MinimumHeightRequest="40"
+                                        Padding="14,0"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HistoryViewModel}}, Path=RetryCommand, x:DataType=vm:HistoryViewModel}"
+                                        CommandParameter="{Binding .}" />
+                                <Button Text="Cancel"
+                                        Style="{StaticResource DangerButton}"
+                                        FontSize="15"
+                                        MinimumHeightRequest="40"
+                                        Padding="14,0"
+                                        HorizontalOptions="Start"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HistoryViewModel}}, Path=CancelCommand, x:DataType=vm:HistoryViewModel}"
+                                        CommandParameter="{Binding .}" />
+                                <ActivityIndicator IsVisible="{Binding IsRetrying}" IsRunning="{Binding IsRetrying}"
+                                                   Color="{StaticResource Accent}" WidthRequest="22" HeightRequest="22" />
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

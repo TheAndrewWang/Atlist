@@ -2,16 +2,35 @@
 <Shell x:Class="Atlist.AppShell"
        xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-       xmlns:local="clr-namespace:Atlist"
        xmlns:views="clr-namespace:Atlist.Views"
        Shell.FlyoutBehavior="Disabled"
+       Shell.TabBarBackgroundColor="White"
+       Shell.TabBarForegroundColor="{StaticResource Accent}"
+       Shell.TabBarTitleColor="{StaticResource Accent}"
+       Shell.TabBarUnselectedColor="{StaticResource Muted}"
        Title="Atlist">
 
     <!-- First screen the app opens -->
     <ShellContent Route="connect"
                   ContentTemplate="{DataTemplate views:ConnectPage}" />
 
-    <!-- Placeholder until the Devices page is built -->
-    <ShellContent Route="devices"
-                  ContentTemplate="{DataTemplate local:MainPage}" />
+    <!-- Main app. Pushed pages (settings, quickmessages, scheduleedit) are registered in AppShell.xaml.cs. -->
+    <TabBar>
+        <ShellContent Route="devices"
+                      Title="Devices"
+                      Icon="tab_devices.png"
+                      ContentTemplate="{DataTemplate views:DevicesPage}" />
+        <ShellContent Route="send"
+                      Title="Send"
+                      Icon="tab_send.png"
+                      ContentTemplate="{DataTemplate views:ComposePage}" />
+        <ShellContent Route="schedule"
+                      Title="Schedule"
+                      Icon="tab_schedule.png"
+                      ContentTemplate="{DataTemplate views:SchedulePage}" />
+        <ShellContent Route="history"
+                      Title="History"
+                      Icon="tab_history.png"
+                      ContentTemplate="{DataTemplate views:HistoryPage}" />
+    </TabBar>
 </Shell>

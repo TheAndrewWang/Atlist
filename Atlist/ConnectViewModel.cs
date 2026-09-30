@@ -202,7 +202,9 @@ public partial class ConnectViewModel : ObservableObject
         if (DeviceToName is null) return;
 
         DeviceToName.DisplayName = NameEntry.Trim();
-        _store.Save(new PairedDeviceInfo(DeviceToName.Id, DeviceToName.AdvertisedName, DeviceToName.DisplayName));
+        var saved = _store.Get(DeviceToName.Id)
+                    ?? new PairedDeviceInfo(DeviceToName.Id, DeviceToName.AdvertisedName, string.Empty);
+        _store.Save(saved with { DisplayName = DeviceToName.DisplayName }); // keep its other settings
 
         DeviceToName = null;
         NameEntry = string.Empty;
