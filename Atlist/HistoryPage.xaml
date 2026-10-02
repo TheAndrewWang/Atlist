@@ -79,7 +79,7 @@
                                        Text="{Binding StatusText}"
                                        FontFamily="AtkinsonBold"
                                        FontSize="14"
-                                       TextColor="{StaticResource SuccessInk}"
+                                       TextColor="{Binding StatusColor}"
                                        VerticalOptions="Center" />
                             </Grid>
 

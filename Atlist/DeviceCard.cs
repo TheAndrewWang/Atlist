@@ -36,11 +36,11 @@ public partial class DeviceCard : ObservableObject
     private string location;
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(Subtitle))]
+    [NotifyPropertyChangedFor(nameof(Subtitle), nameof(StatusDetail))]
     private DateTimeOffset? lastSeen;
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(StatusText), nameof(IsInRange), nameof(IsOutOfRange), nameof(ShowScreen), nameof(Subtitle),
+    [NotifyPropertyChangedFor(nameof(StatusText), nameof(IsInRange), nameof(IsOutOfRange), nameof(ShowScreen), nameof(Subtitle), nameof(StatusDetail),
                               nameof(PillBackground), nameof(PillText))]
     private DeviceReachability reachability = DeviceReachability.Unknown;
 
@@ -71,6 +71,13 @@ public partial class DeviceCard : ObservableObject
         DeviceReachability.InRange => "In range",
         DeviceReachability.OutOfRange => "Out of range",
         _ => "Checking…"
+    };
+
+    public string StatusDetail => Reachability switch
+    {
+        DeviceReachability.InRange => "Connected now. The screen below shows the latest reply.",
+        DeviceReachability.OutOfRange => $"Couldn't reach this device. Last connected {FormatAgo(LastSeen)}. Messages wait until it is nearby.",
+        _ => "Checking connection. Pull down to check again."
     };
 
     // Pill colors from the mockup

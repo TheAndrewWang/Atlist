@@ -170,7 +170,7 @@ public partial class ConnectViewModel : ObservableObject
             var result = await _ble.SendAndWaitForReplyAsync($"CODE|{code.Trim()}", ReplyTimeout);
             if (result != "OK")
             {
-                await Shell.Current.DisplayAlert("Code didn't match",
+                await Shell.Current.DisplayAlertAsync("Code didn't match",
                     "Check the number on the device's screen and try Pair again.", "OK");
                 return;
             }
@@ -183,7 +183,7 @@ public partial class ConnectViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Couldn't pair",
+            await Shell.Current.DisplayAlertAsync("Couldn't pair",
                 $"{ex.Message}\n\nMake sure the device shows PAIR MODE and is close to the phone.", "OK");
         }
         finally
@@ -215,7 +215,7 @@ public partial class ConnectViewModel : ObservableObject
     {
         if (DeviceToName is not null)
         {
-            await Shell.Current.DisplayAlert("Name your device",
+            await Shell.Current.DisplayAlertAsync("Name your device",
                 "Give the device you just paired a name before continuing.", "OK");
             return;
         }

@@ -111,6 +111,13 @@
                                     </Border>
                                 </Grid>
 
+                                <Label Text="{Binding StatusDetail}"
+                                       FontFamily="Atkinson"
+                                       FontSize="14"
+                                       LineHeight="1.35"
+                                       TextColor="{StaticResource Muted}"
+                                       SemanticProperties.Description="{Binding StatusDetail}" />
+
                                 <!-- Mirror of the device's LCD, in its backlight color -->
                                 <Border IsVisible="{Binding ShowScreen}"
                                         BackgroundColor="{StaticResource LcdGround}"
@@ -158,13 +165,6 @@
                                             SemanticProperties.Description="{Binding Title, StringFormat='Settings for {0}'}" />
                                 </Grid>
 
-                                <!-- Out of range: no screen or buttons, just a note -->
-                                <Label IsVisible="{Binding IsOutOfRange}"
-                                       Text="Messages you send will wait and deliver when the phone is back in range."
-                                       FontFamily="Atkinson"
-                                       FontSize="14"
-                                       LineHeight="1.4"
-                                       TextColor="{StaticResource Muted}" />
                             </VerticalStackLayout>
                         </Border>
                     </DataTemplate>

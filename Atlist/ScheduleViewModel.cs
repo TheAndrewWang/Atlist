@@ -33,7 +33,7 @@ public partial class ScheduleRow : ObservableObject
 }
 
 /// <summary>One device's reset cycle in the "Reset cycles" list.</summary>
-public record ResetRow(Guid DeviceId, string Name, string CycleText);
+public record ResetRow(Guid DeviceId, string Name, string CycleText, string DetailText);
 
 /// <summary>
 /// Drives the Schedule page: the daily messages each device shows by itself,
@@ -81,7 +81,11 @@ public partial class ScheduleViewModel : ObservableObject
 
         ResetCycles.Clear();
         foreach (var d in devices)
-            ResetCycles.Add(new ResetRow(d.Id, d.Title, $"Every {d.ResetHours} hours  ›"));
+        {
+            var cycle = d.ResetHours == 1 ? "1 hour" : $"{d.ResetHours} hours";
+            ResetCycles.Add(new ResetRow(d.Id, d.Title, $"Every {cycle}",
+                $"Completed items clear after {cycle}. Tap to change this device's cycle."));
+        }
 
         UpdateSyncText();
 

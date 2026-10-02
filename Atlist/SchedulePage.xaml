@@ -85,21 +85,25 @@
                     </VerticalStackLayout>
 
                     <Label Text="RESET CYCLES" Style="{StaticResource SectionLabel}" Margin="0,8,0,0" />
+                    <Label Text="Completed items clear automatically after each device's reset interval."
+                           Style="{StaticResource Hint}"
+                           LineHeight="1.35" />
 
                     <Border Style="{StaticResource Card}" Padding="0">
                         <VerticalStackLayout BindableLayout.ItemsSource="{Binding ResetCycles}">
                             <BindableLayout.ItemTemplate>
                                 <DataTemplate x:DataType="vm:ResetRow">
                                     <Grid ColumnDefinitions="*,Auto"
-                                          MinimumHeightRequest="52"
-                                          Padding="14,0">
+                                          RowDefinitions="Auto,Auto"
+                                          Padding="14,10">
                                         <Grid.GestureRecognizers>
                                             <TapGestureRecognizer
                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ScheduleViewModel}}, Path=OpenDeviceCommand, x:DataType=vm:ScheduleViewModel}"
                                                 CommandParameter="{Binding .}" />
                                         </Grid.GestureRecognizers>
                                         <Label Text="{Binding Name}" Style="{StaticResource BodyBold}" VerticalOptions="Center" />
-                                        <Label Grid.Column="1" Text="{Binding CycleText}" Style="{StaticResource Hint}" FontSize="15" VerticalOptions="Center" />
+                                        <Label Grid.Column="1" Text="{Binding CycleText}" Style="{StaticResource BodyBold}" FontSize="14" TextColor="{StaticResource Accent}" VerticalOptions="Center" />
+                                        <Label Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding DetailText}" Style="{StaticResource Hint}" FontSize="13" Margin="0,4,0,0" />
                                         <BoxView Grid.ColumnSpan="2" HeightRequest="1" Color="{StaticResource Divider}" VerticalOptions="End" Margin="-14,0" />
                                     </Grid>
                                 </DataTemplate>

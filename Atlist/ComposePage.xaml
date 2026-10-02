@@ -163,12 +163,19 @@
                         CornerRadius="14"
                         MinimumHeightRequest="54" />
 
-                <Label Text="{Binding StatusText}"
-                       TextColor="{Binding StatusColor}"
-                       FontFamily="AtkinsonBold"
-                       FontSize="15"
-                       HorizontalTextAlignment="Center"
-                       SemanticProperties.Description="{Binding StatusText}" />
+                <Border IsVisible="{Binding HasStatus}"
+                        BackgroundColor="{StaticResource WaitSoft}"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 12"
+                        Padding="14,12">
+                    <Label Text="{Binding StatusText}"
+                           TextColor="{Binding StatusColor}"
+                           FontFamily="AtkinsonBold"
+                           FontSize="16"
+                           LineHeight="1.35"
+                           HorizontalTextAlignment="Start"
+                           SemanticProperties.Description="{Binding StatusText}" />
+                </Border>
             </VerticalStackLayout>
         </ScrollView>
     </Grid>

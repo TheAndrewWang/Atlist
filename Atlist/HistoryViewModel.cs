@@ -31,11 +31,15 @@ public partial class HistoryRow : ObservableObject
     public string StatusText => (Total, Delivered) switch
     {
         (0, _) => "Cancelled",
-        var (t, d) when d == t && !Message.ToAllDevices => "✓ Delivered",
-        var (t, d) when d == t => $"✓ Delivered to all {t}",
+        var (t, d) when d == t && !Message.ToAllDevices => "Delivered",
+        var (t, d) when d == t => $"Delivered to all {t}",
         (_, 0) => "Not delivered yet",
-        var (t, d) => $"✓ {d} of {t} delivered"
+        var (t, d) => $"Partly delivered: {d} of {t}"
     };
+
+    public Color StatusColor => HasWaiting
+        ? Color.FromArgb("#8A4414")
+        : Color.FromArgb("#145C4A");
 
     public string WaitingText => $"Waiting for {string.Join(", ", WaitingNames)} — out of range";
 

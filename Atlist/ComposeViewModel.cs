@@ -53,7 +53,10 @@ public partial class ComposeViewModel : ObservableObject, IQueryAttributable
     private bool isSending;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasStatus))]
     private string statusText = string.Empty;
+
+    public bool HasStatus => !string.IsNullOrWhiteSpace(StatusText);
 
     /// <summary>Green when every device got the message, amber when some are waiting.</summary>
     [ObservableProperty]

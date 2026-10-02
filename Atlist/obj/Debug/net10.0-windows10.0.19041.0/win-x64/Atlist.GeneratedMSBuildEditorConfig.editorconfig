@@ -22,7 +22,7 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property.EntryPointFilePath = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Atlist
-build_property.ProjectDir = C:\Users\User\source\repos\Atlist\Atlist\
+build_property.ProjectDir = C:\Users\Kevin Z\Documents\Atlist\Atlist\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.CsWinRTAotExportsEnabled = 
@@ -34,7 +34,7 @@ build_property.CsWinRTUseWindowsUIXamlProjections = false
 build_property.EffectiveAnalysisLevelStyle = 10.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/User/source/repos/Atlist/Atlist/App.xaml]
+[C:/Users/Kevin Z/Documents/Atlist/Atlist/App.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = Atlist.App.xaml
 build_metadata.AdditionalFiles.TargetPath = App.xaml
@@ -44,7 +44,7 @@ build_metadata.AdditionalFiles.NoWarn =
 build_metadata.AdditionalFiles.EnableDiagnostics = 
 build_metadata.AdditionalFiles.LineInfo = 
 
-[C:/Users/User/source/repos/Atlist/Atlist/AppShell.xaml]
+[C:/Users/Kevin Z/Documents/Atlist/Atlist/AppShell.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = Atlist.AppShell.xaml
 build_metadata.AdditionalFiles.TargetPath = AppShell.xaml
@@ -54,7 +54,17 @@ build_metadata.AdditionalFiles.NoWarn =
 build_metadata.AdditionalFiles.EnableDiagnostics = 
 build_metadata.AdditionalFiles.LineInfo = 
 
-[C:/Users/User/source/repos/Atlist/Atlist/ConnectPage.xaml]
+[C:/Users/Kevin Z/Documents/Atlist/Atlist/ComposePage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = Atlist.ComposePage.xaml
+build_metadata.AdditionalFiles.TargetPath = ComposePage.xaml
+build_metadata.AdditionalFiles.RelativePath = ComposePage.xaml
+build_metadata.AdditionalFiles.Inflator = SourceGen
+build_metadata.AdditionalFiles.NoWarn = 
+build_metadata.AdditionalFiles.EnableDiagnostics = 
+build_metadata.AdditionalFiles.LineInfo = 
+
+[C:/Users/Kevin Z/Documents/Atlist/Atlist/ConnectPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = Atlist.ConnectPage.xaml
 build_metadata.AdditionalFiles.TargetPath = ConnectPage.xaml
@@ -64,7 +74,37 @@ build_metadata.AdditionalFiles.NoWarn =
 build_metadata.AdditionalFiles.EnableDiagnostics = 
 build_metadata.AdditionalFiles.LineInfo = 
 
-[C:/Users/User/source/repos/Atlist/Atlist/MainPage.xaml]
+[C:/Users/Kevin Z/Documents/Atlist/Atlist/DeviceSettingsPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = Atlist.DeviceSettingsPage.xaml
+build_metadata.AdditionalFiles.TargetPath = DeviceSettingsPage.xaml
+build_metadata.AdditionalFiles.RelativePath = DeviceSettingsPage.xaml
+build_metadata.AdditionalFiles.Inflator = SourceGen
+build_metadata.AdditionalFiles.NoWarn = 
+build_metadata.AdditionalFiles.EnableDiagnostics = 
+build_metadata.AdditionalFiles.LineInfo = 
+
+[C:/Users/Kevin Z/Documents/Atlist/Atlist/DevicesPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = Atlist.DevicesPage.xaml
+build_metadata.AdditionalFiles.TargetPath = DevicesPage.xaml
+build_metadata.AdditionalFiles.RelativePath = DevicesPage.xaml
+build_metadata.AdditionalFiles.Inflator = SourceGen
+build_metadata.AdditionalFiles.NoWarn = 
+build_metadata.AdditionalFiles.EnableDiagnostics = 
+build_metadata.AdditionalFiles.LineInfo = 
+
+[C:/Users/Kevin Z/Documents/Atlist/Atlist/HistoryPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = Atlist.HistoryPage.xaml
+build_metadata.AdditionalFiles.TargetPath = HistoryPage.xaml
+build_metadata.AdditionalFiles.RelativePath = HistoryPage.xaml
+build_metadata.AdditionalFiles.Inflator = SourceGen
+build_metadata.AdditionalFiles.NoWarn = 
+build_metadata.AdditionalFiles.EnableDiagnostics = 
+build_metadata.AdditionalFiles.LineInfo = 
+
+[C:/Users/Kevin Z/Documents/Atlist/Atlist/MainPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = Atlist.MainPage.xaml
 build_metadata.AdditionalFiles.TargetPath = MainPage.xaml
@@ -74,7 +114,27 @@ build_metadata.AdditionalFiles.NoWarn =
 build_metadata.AdditionalFiles.EnableDiagnostics = 
 build_metadata.AdditionalFiles.LineInfo = 
 
-[C:/Users/User/source/repos/Atlist/Atlist/Resources/Styles/Colors.xaml]
+[C:/Users/Kevin Z/Documents/Atlist/Atlist/QuickMessagesPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = Atlist.QuickMessagesPage.xaml
+build_metadata.AdditionalFiles.TargetPath = QuickMessagesPage.xaml
+build_metadata.AdditionalFiles.RelativePath = QuickMessagesPage.xaml
+build_metadata.AdditionalFiles.Inflator = SourceGen
+build_metadata.AdditionalFiles.NoWarn = 
+build_metadata.AdditionalFiles.EnableDiagnostics = 
+build_metadata.AdditionalFiles.LineInfo = 
+
+[C:/Users/Kevin Z/Documents/Atlist/Atlist/Resources/Styles/Checklist.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = Atlist.Resources.Styles.Checklist.xaml
+build_metadata.AdditionalFiles.TargetPath = Resources\Styles\Checklist.xaml
+build_metadata.AdditionalFiles.RelativePath = Resources\Styles\Checklist.xaml
+build_metadata.AdditionalFiles.Inflator = SourceGen
+build_metadata.AdditionalFiles.NoWarn = 
+build_metadata.AdditionalFiles.EnableDiagnostics = 
+build_metadata.AdditionalFiles.LineInfo = 
+
+[C:/Users/Kevin Z/Documents/Atlist/Atlist/Resources/Styles/Colors.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = Atlist.Resources.Styles.Colors.xaml
 build_metadata.AdditionalFiles.TargetPath = Resources\Styles\Colors.xaml
@@ -84,11 +144,31 @@ build_metadata.AdditionalFiles.NoWarn =
 build_metadata.AdditionalFiles.EnableDiagnostics = 
 build_metadata.AdditionalFiles.LineInfo = 
 
-[C:/Users/User/source/repos/Atlist/Atlist/Resources/Styles/Styles.xaml]
+[C:/Users/Kevin Z/Documents/Atlist/Atlist/Resources/Styles/Styles.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = Atlist.Resources.Styles.Styles.xaml
 build_metadata.AdditionalFiles.TargetPath = Resources\Styles\Styles.xaml
 build_metadata.AdditionalFiles.RelativePath = Resources\Styles\Styles.xaml
+build_metadata.AdditionalFiles.Inflator = SourceGen
+build_metadata.AdditionalFiles.NoWarn = 
+build_metadata.AdditionalFiles.EnableDiagnostics = 
+build_metadata.AdditionalFiles.LineInfo = 
+
+[C:/Users/Kevin Z/Documents/Atlist/Atlist/ScheduleEditPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = Atlist.ScheduleEditPage.xaml
+build_metadata.AdditionalFiles.TargetPath = ScheduleEditPage.xaml
+build_metadata.AdditionalFiles.RelativePath = ScheduleEditPage.xaml
+build_metadata.AdditionalFiles.Inflator = SourceGen
+build_metadata.AdditionalFiles.NoWarn = 
+build_metadata.AdditionalFiles.EnableDiagnostics = 
+build_metadata.AdditionalFiles.LineInfo = 
+
+[C:/Users/Kevin Z/Documents/Atlist/Atlist/SchedulePage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = Atlist.SchedulePage.xaml
+build_metadata.AdditionalFiles.TargetPath = SchedulePage.xaml
+build_metadata.AdditionalFiles.RelativePath = SchedulePage.xaml
 build_metadata.AdditionalFiles.Inflator = SourceGen
 build_metadata.AdditionalFiles.NoWarn = 
 build_metadata.AdditionalFiles.EnableDiagnostics = 
