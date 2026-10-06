@@ -1,4 +1,28 @@
+# IDE
 .vs/
 .idea/
+.vscode/
+*.suo
+*.user
+*.userprefs
+
+# Build output
 **/bin/
 **/obj/
+[Dd]ebug/
+[Rr]elease/
+*.log
+
+# Publish profiles (per-user)
+*.pubxml.user
+
+# NuGet
+*.nupkg
+packages/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node (stray)
+node_modules/
