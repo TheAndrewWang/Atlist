@@ -32,10 +32,10 @@ The system is designed to be as intuitive as a light switch. It has:
 ## Team Members
 
 - Andrew Wang — wanga17@rpi.edu — 4 credits
-- Ethan Ho — hoe2@rpi.edu — 4 credits
 - Ethan Guo — guoe2@rpi.edu — 4 credits
 - Kevin Zhu — zhuk5@rpi.edu — 4 credits
 - Nicholas Huang — huangn2@rpi.edu — 2 credits
+- Ethan Ho — hoe2@rpi.edu — 2 credits
 - Kaeton Huang — huangk11@rpi.edu — 0 credits
 
 ## Teams
@@ -88,3 +88,4 @@ The Software Team focuses on the electronics and the companion application.
 - Connect the app to the electronics and begin testing.
 - Wire and program a working version with all controls functional.
 - Prepare the final demo, documentation, and presentation.
+
