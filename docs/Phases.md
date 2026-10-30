@@ -1,235 +1,51 @@
-# Product Development Phases
+# Product development plan
 
-## Phase 0 — Define the Software Contract
+This plan reflects the repository as it exists today. Dates from the original Fall 2026 schedule are omitted so the plan remains useful as priorities change.
 
-**Target:** September, Week 1  
-**Goal:** Turn the product concept into decisions the team can build against.
+## Current product shape
 
-### Deliverables
+- The caregiver interface is a .NET MAUI app in `Atlist/`.
+- The app talks directly to checklist devices over BLE using the text protocol in `BleProtocol.md`.
+- Device settings and schedules are stored on the phone and copied to each device. The device is expected to retain its schedule locally.
+- `backend/` is an independent Express health-check stub and `frontend/` is a Vite placeholder. Neither participates in the app's current flows.
+- Firmware and hardware files are maintained outside this repository.
 
-#### 1. Define primary users
+## Completed foundation
 
-- **Checklist user:** Operates physical controls only.
-- **Caregiver:** Sets tasks and reset schedules, and views progress.
-- **Admin/developer:** Pairs devices and diagnoses issues.
+The repository contains app flows for pairing, device settings, sending messages, scheduled messages, and message delivery history. It also contains local JSON-backed stores, a shared BLE connection service, and a documented command protocol.
 
-#### 2. Define the first supported flow
+These code paths still depend on compatible external device firmware and need end-to-end validation on the target hardware. The presence of an app flow does not establish that the corresponding firmware behavior is implemented or tested.
 
-1. A caregiver assigns “Take medication” to a device.
-2. The device shows the task as pending.
-3. The user activates its physical control.
-4. The device provides immediate visible feedback.
-5. Completion is stored locally and synced to the backend.
-6. The caregiver sees the task as completed.
+## Priorities
 
-#### 3. Freeze the minimum viable task model
+### 1. Validate the device contract
 
-- Task name
-- Icon or label
-- Device-control assignment
-- Enabled/disabled state
-- Completion state
-- Reset cadence: 6, 12, or 24 hours
-- Completion timestamp
-- Optional caregiver note
+- Confirm the firmware implements every command and reply in `BleProtocol.md`.
+- Confirm behavior for repeated button presses, repeated messages, settings changes, and schedule replacement.
+- Verify that time and reset behavior remain correct after reboot, timezone changes, daylight-saving transitions, and power loss.
+- Record the board, BLE module, display, controls, pin mapping, and firmware build/flash steps.
 
-#### 4. Agree on non-functional requirements
+### 2. Make synchronization recoverable
 
-- The device works when Wi-Fi fails.
-- Physical feedback occurs in under 200 ms.
-- A reboot cannot silently erase a completion event.
-- The device recovers automatically after power or network loss.
-- The physical device requires no user login.
+- Exercise full schedule sync with the device disconnected at each command boundary.
+- Verify that retrying a sync converges to the phone's schedule without duplicate entries.
+- Consider adding protocol support for staging and committing a schedule atomically if the firmware can be updated in lockstep.
+- Surface actionable sync state to the caregiver, including the affected device and retry path.
 
-**Checkpoint:** A one-page software requirements document, device/app interaction diagram, and agreed technology stack. Document hardware pin/control assumptions before implementation begins.
+### 3. Validate usability and reliability
 
----
+- Test pairing and routine caregiver tasks with the physical device.
+- Check readability, control-to-task mapping, pending/completed feedback, and recovery from mistaken input.
+- Exercise Bluetooth loss, device power loss, app restart, and repeated delivery.
+- Keep a short record of observed failures and fixes.
 
-## Phase 1 — Technical Proof of Concept
+### 4. Decide whether cloud services are needed
 
-**Target:** September, Weeks 2–3  
-**Goal:** Prove the riskiest technical pieces with minimal interfaces.
+The current product works as a local phone-to-device companion. If remote caregiver access, cross-phone backup, or server-side history becomes a requirement, define the data model, authentication, privacy boundaries, and offline conflict rules before extending the backend. Until then, the backend and Vite frontend should be treated as placeholders rather than dependencies of the current app.
 
-### Workstreams
+## Release checklist
 
-#### Repository and development standards
-
-- Branching and pull-request expectations
-- Issue board for software tasks
-- Environment-variable and secret-management approach
-- Firmware flashing and build instructions
-- Basic CI: firmware build plus app/backend linting and tests
-
-#### Firmware prototype
-
-- Read at least one physical control.
-- Drive one feedback component: LED, display indicator, vibration, or light.
-- Store state in non-volatile memory.
-- Implement a debounced input handler.
-- Simulate a reset cycle.
-
-#### Backend prototype
-
-- Create a device record.
-- Create and retrieve task configurations.
-- Accept completion-event logs.
-- Return the current configuration for a device.
-
-#### App prototype
-
-- Create and edit a task.
-- Select reset frequency.
-- Display device completion status.
-
-#### Integration
-
-- Connect one control to one task across the full happy path.
-
-**Checkpoint:** Demonstrate changing one task in the app, syncing it to one prototype device, pressing the control, and seeing the completion in the app.
-
----
-
-## Phase 2 — Build the Core Product Loop
-
-**Target:** October, Weeks 1–2  
-**Goal:** Expand the proof of concept into a reliable single-device MVP.
-
-### Firmware
-
-- Support all intended physical control types through a common `TaskControl` interface.
-- Map each control to a stable task ID, never an array position or display label.
-- Maintain local task state, configuration version, and unsynced events.
-- Retry failed syncs with backoff.
-- Report device ID, firmware version, battery/power state when available, and last-sync time.
-- Implement configurable 6-, 12-, and 24-hour reset behavior.
-- Define whether resets are rolling intervals or fixed clock times; fixed local times are generally clearer for caregivers.
-- Validate incoming configuration before safely applying an update.
-
-### Backend
-
-- Device registration and pairing
-- Task configuration CRUD
-- Reset-schedule storage
-- Immutable completion-event logging
-- Current device/task-status endpoint
-- Input validation and useful error responses
-
-### App
-
-- Device setup screen
-- Task editing screen
-- Current-day checklist status
-- Last-sync/offline indicator
-- Simple completion history
-
-### Hardware-team validation
-
-- Confirm each selected button, toggle, and dial has a defined software interpretation.
-- Specify behavior for repeated presses, toggle state after restart, and task reassignment after completion.
-
-**Checkpoint:** All planned controls work on one prototype; a caregiver can configure it without developer intervention; and device state survives a power cycle.
-
----
-
-## Phase 3 — Reliability, Caregiver Insight, and Integration
-
-**Target:** October, Weeks 3–4  
-**Goal:** Turn the classroom prototype into a credible assistive device.
-
-### Offline-first behavior
-
-- Update completion locally without waiting for a network response.
-- Preserve the event queue through power loss.
-- Define and test sync-conflict rules.
-- Continue reset cycles while offline.
-- Provide a simple offline/error indication that does not confuse the checklist user.
-
-### History and caregiver features
-
-- Daily completion history by task
-- Visibility into missed or uncompleted tasks after the reset boundary
-- One basic alert rule, such as “medication not completed by 10:00 AM”
-- Start with in-app alerts or email; defer SMS and push notifications until the core is complete.
-
-### Pairing and security
-
-- Use a physical pairing code or QR code during setup.
-- Give every device a unique credential.
-- Do not expose unauthenticated endpoints that accept completions for arbitrary device IDs.
-- Keep personally identifying and medical information out of logs unless essential.
-
-### Observability
-
-- Device health check or heartbeat
-- Server-side error logging
-- Firmware diagnostic mode for the team
-- Support view for last sync, firmware version, and connectivity state
-
-**Checkpoint:** Disconnect Wi-Fi, complete tasks, reboot the device, restore Wi-Fi, and verify every event appears exactly once in caregiver history.
-
----
-
-## Phase 4 — User Testing and Refinement
-
-**Target:** November, Weeks 1–2  
-**Goal:** Validate usability for users with cognitive or memory impairments, where usability is a core feature rather than final polish.
-
-### Test plan
-
-- Can the user identify each control’s meaning?
-- Can they distinguish pending from completed?
-- Do they understand what happens after a reset?
-- Can a caregiver set up the device without help?
-- What happens when a user changes their mind or presses a control twice?
-
-### Test execution and evidence
-
-- Run supervised tests with mockups or prototypes before finalizing firmware behavior.
-- Record task-completion time, wrong-control activations, caregiver assistance, feedback/reset confusion, and technical failures.
-
-### Prioritization
-
-1. Safety, data loss, and ambiguous feedback
-2. Configuration friction and reliability
-3. Visual refinement and extra features
-
-**Checkpoint:** A documented usability-test report, a ranked fix list, and a tested release candidate.
-
----
-
-## Phase 5 — Final Hardening and Presentation
-
-**Target:** November, Weeks 3–4  
-**Goal:** Prepare a dependable, transparent, demo-ready release.
-
-### Demo-ready deployment
-
-- Reproducible firmware build and flash process
-- Hosted or locally deployable backend
-- Seed/demo device and caregiver account setup flow
-- Reset and recovery instructions
-- Honestly documented known limitations
-
-### Failure-scenario testing
-
-- Wi-Fi loss
-- Router change
-- Power interruption
-- Backend unavailability
-- Repeated button press
-- Invalid configuration
-- Time/reset boundary
-- Device reboot during a pending sync
-
-### Final documentation
-
-- System architecture
-- API specification
-- Database schema
-- Firmware state machine
-- Hardware pin/control mapping
-- Setup and troubleshooting guide
-- Privacy and security decisions
-- Future-scale plan
-
-**Checkpoint:** A reproducible end-to-end demo, documented recovery procedures, and final technical documentation ready for handoff or presentation.
+- Reproducible app build and device firmware flashing instructions.
+- End-to-end pairing, settings, message, schedule, retry, and reboot checks on the target hardware.
+- Documented limitations, local data behavior, and recovery steps.
+- A known-good demo device and a caregiver setup walkthrough.

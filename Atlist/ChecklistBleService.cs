@@ -95,7 +95,16 @@ public class ChecklistBleService : IChecklistBleService
     public async Task ConnectAsync(IDevice device, CancellationToken ct = default)
     {
         await _adapter.ConnectToDeviceAsync(device, cancellationToken: ct);
-        await SetUpCharacteristicAsync(device, ct);
+        try
+        {
+            await SetUpCharacteristicAsync(device, ct);
+        }
+        catch
+        {
+            // A failed service/characteristic lookup must not leave a connection open.
+            try { await _adapter.DisconnectDeviceAsync(device); } catch { }
+            throw;
+        }
     }
 
     public async Task<IDevice> ConnectKnownAsync(Guid deviceId, CancellationToken ct = default)
@@ -122,6 +131,13 @@ public class ChecklistBleService : IChecklistBleService
     /// <summary>Finds the HM-10 characteristic and starts listening for replies.</summary>
     private async Task SetUpCharacteristicAsync(IDevice device, CancellationToken ct)
     {
+        if (_characteristic is not null)
+        {
+            _characteristic.ValueUpdated -= OnValueUpdated;
+            try { await _characteristic.StopUpdatesAsync(); } catch { /* previous connection is gone */ }
+            _characteristic = null;
+        }
+
         var service = await device.GetServiceAsync(ServiceUuid, ct)
             ?? throw new InvalidOperationException("This device doesn't have the checklist service. Is it an HM-10?");
 
