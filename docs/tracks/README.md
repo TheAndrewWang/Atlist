@@ -12,9 +12,9 @@ The UNO Q's Bluetooth is wired to its Linux side, not the MCU. That's why there'
 
 | Track | Language | Owner | Code | Branch |
 |-------|----------|-------|------|--------|
-| [Caregiver app](app.md) | C# / .NET MAUI | Nicholas | `Atlist/` | `app` |
-| [BLE server](ble-server.md) | Python | _____ | `device/` | `ble-server` |
-| [Firmware](firmware.md) | C++ / Arduino | _____ | `device/` | `firmware` |
+| [Caregiver app](app.md) | C# / .NET MAUI | Andrew | `Atlist/` | `app` |
+| [BLE server](ble-server.md) | Python | Kevin | `device/` | `ble-server` |
+| [Firmware](firmware.md) | C++ / Arduino | Ethan | `device/` | `firmware` |
 
 ## Setup by computer
 

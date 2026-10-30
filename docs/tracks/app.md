@@ -1,6 +1,6 @@
 # Track: Caregiver app (C# / .NET MAUI)
 
-**Owner:** Nicholas
+**Owner:** Andrew
 **Branch:** `app`
 **Code lives in:** `Atlist/`
 **Builds against:** `docs/Protocol.md` (BLE sections) and `docs/Design.pdf` (7 screens)

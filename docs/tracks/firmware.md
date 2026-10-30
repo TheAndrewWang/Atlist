@@ -1,6 +1,6 @@
 # Track: Device firmware (C++ / Arduino, UNO Q MCU)
 
-**Owner:** _____
+**Owner:** Ethan
 **Branch:** `firmware`
 **Code lives in:** `device/Atlist.ino`, the existing button + LCD + beeper test, which this track grows. `device/` is the UNO Q app folder shared with the BLE server track.
 **Builds against:** `docs/Protocol.md`: the **Bridge** section and the Rules

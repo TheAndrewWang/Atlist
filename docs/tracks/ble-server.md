@@ -1,6 +1,6 @@
 # Track: BLE server (Python, UNO Q Linux side)
 
-**Owner:** _____
+**Owner:** Kevin
 **Branch:** `ble-server`
 **Code lives in:** `device/`, the UNO Q app folder shared with the firmware track. Step 0 confirms the exact layout App Lab wants.
 **Builds against:** `docs/Protocol.md`: all of it, because this track sits in the middle
