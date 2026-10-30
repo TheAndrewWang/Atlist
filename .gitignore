@@ -1,5 +1,3 @@
-node_modules/
-dist/
 .env
 
 # IDE files
@@ -7,3 +5,12 @@ dist/
 .vs/
 *.suo
 *.user
+
+# build outputs
+bin/
+obj/
+
+# Python
+__pycache__/
+.pytest_cache/
+.venv/
