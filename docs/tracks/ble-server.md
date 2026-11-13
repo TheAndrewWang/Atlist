@@ -113,4 +113,35 @@ It's the device's Bluetooth side. The UNO Q's Bluetooth is on its Linux side, no
 
 Newest entry first. At the end of each session, write what you finished, what's half-done, and the next action.
 
+- **2026-11-13: Bridge Python API checked (step 0, third bullet).**
+  - **Source:** the `arduino_app_bricks` **0.10.1** package inside App Lab's Python image, `ghcr.io/arduino/app-bricks/python-apps-base:0.10.1`, which is already on the board. The file is `/usr/local/lib/python3.13/site-packages/arduino/app_utils/bridge.py`, plus its `examples/1_bridge_call_notify.py` and `2_bridge_provide.py`. Re-check if App Lab updates the package.
+  - **Import:** `from arduino.app_utils import App, Bridge`. The examples use `from arduino.app_utils import *`, which also gives the `call`, `notify` and `provide` decorators.
+  - **Call a function the sketch provides:** `Bridge.call("show", line1, line2, beep, hold, timeout=10)`.
+    - Returns the sketch's return value.
+    - Raises `ValueError` if the sketch has no such function or returns an error, `TimeoutError` after `timeout` seconds (default 10), and `RuntimeError` if the send fails.
+    - It **blocks** the calling thread. In bless's asyncio code, use `await asyncio.to_thread(Bridge.call, "show", ...)`.
+  - **Fire-and-forget to the sketch:** `Bridge.notify("name", *args)`. We don't need it, since every Protocol.md call returns `bool`.
+  - **Receive a notification from the sketch:** `Bridge.provide("pressed", on_pressed)`, with `def on_pressed(count): ...`.
+    - The same `provide` handles both: the sketch's notifications (`pressed`, `pair_hold`) and its calls that expect a reply. For a notification, the return value is ignored.
+    - Register before the sketch sends anything. `provide` registers the name with the router, using `$/register`.
+    - Handlers run on the **`Bridge.read_loop` thread, not the asyncio loop**. To touch bless from one, use `loop.call_soon_threadsafe(...)`. A handler that raises is only logged.
+    - Arguments are positional only: msgpack arrays, so ints stay ints.
+  - **Decorator style (equivalent):** `@call("show")`, `@notify("x")` and `@provide("pressed")` on a function. `@call` and `@notify` functions have a body of `...`.
+  - **Keep-alive:** `App.run(user_loop=None)` blocks until Ctrl+C or SIGTERM. We'll run our own `asyncio.run(main())` instead. Bridge needs no start call: it connects on first use.
+  - **Transport:** MessagePack-RPC over the Unix socket `/var/run/arduino-router.sock`. That socket exists on the host and is world-writable, so code outside the container can reach it too. Override it with the env var `APP_SOCKET` (`unix:///path` or `tcp://host:port`). If the router isn't up, the first Bridge use blocks and retries every 3 seconds.
+  - **Found along the way:**
+    - `bless` is **not** installed in the App Lab Python image.
+    - `arduino.app_utils` is **not** installed on the host Python.
+    - So whichever place runs `ble_server.py` needs one of them added. Decide this together with the "how Python runs" bullet.
+  - **Not checked:** the sketch side (C++ `Bridge.provide` / `Bridge.notify` names and includes). That belongs to the firmware track.
+  - **BLE confirmed:** `device/ble_smoke.py` runs on the **host** Python, with `bless` 0.3.0 pip-installed and not in App Lab's container.
+    - nRF Connect saw the device and read `0` from `press`. **Step 0 checkpoint passes.**
+    - The controller is `14:B5:CD:F0:F2:79`, so step 1's name is **`Checklist-F279`**. The adapter alias is currently `AtlistGoon`.
+    - If `server.start()` fails, check `bluetoothctl show` for `Powered: no` and run `bluetoothctl power on`.
+  - **Half-done in step 0:**
+    - The `device/` layout agreed with Ethan. Running on the host means App Lab only needs to run the sketch.
+    - Sharing these Bridge notes with Ethan.
+    - Installing `arduino.app_utils` on the host so the BLE server can use Bridge. How to install it there isn't checked yet. The package is `arduino_app_bricks` 0.10.1.
+  - **Next:** share the Bridge notes with Ethan and agree the layout, then tick step 0 and start step 1 (`ble_server.py`).
+
 - **2026-10-30:** Track reset. The code now runs on the UNO Q, so no laptop setup is needed. **Next:** step 0 on the UNO Q.
