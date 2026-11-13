@@ -13,8 +13,18 @@ The UNO Q's Bluetooth is wired to its Linux side, not the MCU. That's why there'
 | Track | Language | Owner | Code | Branch |
 |-------|----------|-------|------|--------|
 | [Caregiver app](app.md) | C# / .NET MAUI | Andrew | `Atlist/` | `app` |
-| [BLE server](ble-server.md) | Python | Kevin | `device/` | `ble-server` |
-| [Firmware](firmware.md) | C++ / Arduino | Ethan | `device/` | `firmware` |
+| [BLE server](ble-server.md) | Python | Kevin | `device/server/` | `ble-server` |
+| [Firmware](firmware.md) | C++ / Arduino | Ethan | `device/sketch/` | `firmware` |
+
+**`device/` layout** (agreed by Kevin and Ethan, 2026-11-13):
+```
+device/
+  sketch/sketch.ino   firmware for the MCU (App Lab's sketch layout; the folder name matches the .ino, so it builds in place)
+  server/             Python BLE server, run directly on the board outside App Lab
+  ping/ping.ino       Bridge test sketch: provides ping() -> "pong"
+  ping_test.py        calls ping over arduino-router to check the Bridge link
+```
+Not `device/python/`: App Lab would try to run that folder inside its container, which has no Bluetooth library.
 
 ## Setup by computer
 

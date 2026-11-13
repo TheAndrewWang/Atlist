@@ -2,7 +2,8 @@
 
 **Owner:** Ethan
 **Branch:** `firmware`
-**Code lives in:** `device/Atlist.ino`, the existing button + LCD + beeper test, which this track grows. `device/` is the UNO Q app folder shared with the BLE server track.
+**Code lives in:** `device/sketch/sketch.ino` (was `device/Atlist.ino`), the existing button + LCD + beeper test, which this track grows. `device/` is shared with the BLE server track (see the layout in `docs/tracks/README.md`). Test helpers: `device/ping/ping.ino` + `device/ping_test.py` check the Bridge link on their own.
+**Flashing:** the repo's `device/sketch/sketch.ino` is the source of truth. Edit it only in the repo, then paste it into an Arduino App Lab app's `sketch/sketch.ino` and press Run. Never edit the App Lab copy.
 **Builds against:** `docs/Protocol.md`: the **Bridge** section and the Rules
 **Tests alone with:** a tiny Python test script on the UNO Q's Linux side (or Serial commands) in place of the BLE server
 
@@ -37,7 +38,7 @@ It drives the hardware. It has no Bluetooth and no real clock; it does what the 
 - **Do:** flash Blink, then flash the current `Atlist.ino`.
 - **Checkpoint:** the LCD shows `waiting` / `Presses: 0`, and each press beeps and counts up.
 
-### [ ] 1. Find the Bridge API (read before writing)
+### [x] 1. Find the Bridge API (read before writing)
 - **Do:** read the **Arduino UNO Q Bridge docs and examples**:
   - the include line for the sketch
   - how the sketch **provides** a function Linux can call (e.g. `Bridge.provide`)
@@ -51,7 +52,7 @@ It drives the hardware. It has no Bluetooth and no real clock; it does what the 
 
 ### [ ] 2. Split the sketch into functions
 - **Concepts:** turn the test sketch into small functions with one job each, so Bridge can call them.
-- **Build:** in `Atlist.ino`:
+- **Build:** in `device/sketch/sketch.ino`:
   - `void showLines(const String& l1, const String& l2)`: clears the LCD and prints both lines, **cut to 16 characters**.
   - `void beep()`
   - `void showRest()`: shows the saved resting lines (start with `"Atlist"` / `"Ready"`).
@@ -99,6 +100,10 @@ It drives the hardware. It has no Bluetooth and no real clock; it does what the 
 ## Progress log
 
 Newest entry first. At the end of each session, write what you finished, what's half-done, and the next action.
+
+- **2026-11-13:** Step 1 **done**. Agreed Kevin's `device/` layout (written in `docs/tracks/README.md`) and moved `device/Atlist.ino` to `device/sketch/sketch.ino` with `git mv`; it compiles in place. Ping test files are kept as a Bridge health check. Flashing workflow: edit only the repo's `sketch.ino`, then paste it into App Lab to flash. Idea to raise with the team: have the real sketch also provide `ping`, so the health check works with the real firmware on (that adds a Bridge name, so it needs all three owners). **Next:** step 2, splitting the sketch into functions (`showLines`, `beep`, `showRest`, `onPress`).
+- **2026-11-13:** Step 1 checkpoint **passed**. `device/ping/ping.ino` provides `String ping()` returning `"pong"` via `Bridge.provide_safe` (`#include <Arduino_RouterBridge.h>`, `Bridge.begin()` in `setup()`, library 0.4.4). `device/ping_test.py` (needs `msgpack` in `~/atlist-venv`) calls it over `/var/run/arduino-router.sock` and got `'pong'`, so **`String` return values work over Bridge**. Flashed through Arduino App Lab (paste into a new app's `sketch/sketch.ino`, then Run). `arduino-cli` network upload needs an interactive password prompt, and the board IP changes between sessions. Before flashing, the test returned `[2, 'method ping not available']`, which is the router's error for a name no sketch provides. **Still open in step 1:** agree the `device/` layout with Kevin (he proposed `device/sketch/sketch.ino` + `device/server/`) and move `Atlist.ino`. **Next:** that layout decision, then step 2.
+- **2026-11-13:** Step 0 half-done. Blink flashed and works (`arduino-cli`, FQBN `arduino:zephyr:unoq`, network upload). `Atlist.ino` compiles (needs the `LiquidCrystal_I2C` library, and the sketch must sit in a folder with the same name), but it isn't flashed yet: no LCD or button on hand. **Next:** step 1 (Bridge `ping()`), which needs no extra hardware. Do the step 0 hardware check once the LCD and button arrive.
 
 - **2026-10-30:** Track reset: the sketch moved to `device/Atlist.ino`, and the branch is `firmware`. **Next:** step 0.
 - **2026-10-30:** Track created. `Atlist.ino` already reads the button with a 25 ms debounce, beeps and counts presses. **Next:** step 0.
