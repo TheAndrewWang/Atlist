@@ -36,7 +36,7 @@ It's the device's Bluetooth side. The UNO Q's Bluetooth is on its Linux side, no
   - With the firmware owner, agree the `device/` folder layout App Lab needs for the Python and the sketch. Write it in the README's track table.
 - **Checkpoint:** nRF Connect sees the UNO Q advertising and reads a value. If not, write down what blocked it and tell the team.
 
-### [ ] 1. Advertise and expose the service
+### [x] 1. Advertise and expose the service
 - **Concepts:**
   - GATT: a **service** is a group of **characteristics**, the "mailboxes" from Protocol.md.
   - Each characteristic has properties: read, write, notify.
@@ -112,6 +112,17 @@ It's the device's Bluetooth side. The UNO Q's Bluetooth is on its Linux side, no
 ## Progress log
 
 Newest entry first. At the end of each session, write what you finished, what's half-done, and the next action.
+
+- **2026-11-13 (later): Step 1 done.** `device/ble_server.py` advertises as `Checklist-F279` with the service and all four characteristics.
+  - **Checkpoint passed:** from nRF Connect, a read of `press` returned `0`, and writing `Drink water|Glass by sink|1|0` to `message` printed in the terminal.
+  - **How the name works:** it comes from `bluetoothctl show` (the `Controller` line). bless sets the adapter alias to it.
+  - **bless 0.3.0 signatures, checked against the installed source:** `write_request_func(characteristic, value)` and `read_request_func(characteristic)`, with no kwargs.
+  - **Gotcha:** Bluetooth was soft-blocked (rfkill) after the smoke test, so `bluetoothctl power on` failed and advertising was rejected.
+    - Check with `cat /sys/class/rfkill/rfkill0/soft`; `1` means blocked.
+    - The `arduino` user is in `netdev`, so it can unblock through `/dev/rfkill` without sudo. Or turn Bluetooth on from the blueman tray icon, which also remembers it.
+    - `sudo` doesn't work in Claude Code's `!` mode, because it can't prompt for a password.
+  - **Still open from step 0:** the `device/` layout with Ethan, and sharing the Bridge notes.
+  - **Next:** step 2, `device/protocol.py` + `device/test_protocol.py`: parsers, `ProtocolError` and pytest. No Bluetooth needed.
 
 - **2026-11-13: Bridge Python API checked (step 0, third bullet).**
   - **Source:** the `arduino_app_bricks` **0.10.1** package inside App Lab's Python image, `ghcr.io/arduino/app-bricks/python-apps-base:0.10.1`, which is already on the board. The file is `/usr/local/lib/python3.13/site-packages/arduino/app_utils/bridge.py`, plus its `examples/1_bridge_call_notify.py` and `2_bridge_provide.py`. Re-check if App Lab updates the package.
