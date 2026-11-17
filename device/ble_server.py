@@ -1,4 +1,4 @@
-"""Atlist BLE server, step 1: advertise and expose the service.
+"""Atlist BLE server: advertise the service and validate writes (steps 1-2).
 
 Runs on the UNO Q's Linux side. See docs/Protocol.md for the contract.
 """
@@ -14,6 +14,9 @@ from bless import (
     GATTCharacteristicProperties,
     GATTAttributePermissions,
 )
+from dbus_next.errors import DBusError
+
+from protocol import ProtocolError, parse_clock, parse_config, parse_message
 
 # UUIDs from docs/Protocol.md
 SERVICE_UUID = "101ef69f-fe23-4d35-8a19-caa905720000"
@@ -28,6 +31,13 @@ NAMES = {
     PRESS_UUID: "press",
     CLOCK_UUID: "clock",
     CONFIG_UUID: "config",
+}
+
+# Which parser checks each writable characteristic.
+PARSERS = {
+    MESSAGE_UUID: parse_message,
+    CLOCK_UUID: parse_clock,
+    CONFIG_UUID: parse_config,
 }
 
 logging.basicConfig(level=logging.INFO)
@@ -68,11 +78,24 @@ def on_read(characteristic: BlessGATTCharacteristic) -> bytearray:
 def on_write(characteristic: BlessGATTCharacteristic, value: bytearray) -> None:
     """bless calls this whenever a phone writes a characteristic.
 
-    Step 1 only stores and prints. Step 2 adds validation.
+    The payload is parsed first. If it breaks a Protocol.md rule, nothing is
+    stored and a DBusError named org.bluez.Error.Failed is raised. bless
+    passes it up to dbus-next, which replies to BlueZ with that error, and
+    BlueZ fails the phone's write with ATT error 0x80. Any other error name
+    (a plain ProtocolError, for example) is reported to the phone as a
+    successful write.
     """
+    name = label(characteristic)
+    parser = PARSERS.get(str(characteristic.uuid).lower())
+    try:
+        if parser is None:
+            raise ProtocolError(f"{name} is not writable")
+        parsed = parser(value)
+    except ProtocolError as e:
+        logger.warning(f"Rejected {name} write {bytes(value)!r}: {e}")
+        raise DBusError("org.bluez.Error.Failed", str(e)) from e
     characteristic.value = value
-    text = bytes(value).decode("ascii", errors="replace")
-    print(f"Write {label(characteristic)}: {text!r}", flush=True)
+    print(f"Write {name}: {parsed}", flush=True)
 
 
 async def main() -> None:

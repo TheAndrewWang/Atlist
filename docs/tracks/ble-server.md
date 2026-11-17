@@ -113,6 +113,19 @@ It's the device's Bluetooth side. The UNO Q's Bluetooth is on its Linux side, no
 
 Newest entry first. At the end of each session, write what you finished, what's half-done, and the next action.
 
+- **2026-11-17: Step 2 almost done.** `device/protocol.py` + `device/test_protocol.py` are committed, and **49 tests pass**. `on_write` in `ble_server.py` now parses every write before storing it.
+  - **On the board with nRF Connect (iPhone):**
+    - `Drink water|Glass by sink|1|0` printed `Message(line1='Drink water', line2='Glass by sink', beep=1, hold=0)`.
+    - `a|b|9|0` was rejected (`beep out of range: 9`), and nothing was stored.
+  - **How a rejection reaches BlueZ:** a plain exception from `on_write` doesn't work. bless doesn't catch it, so dbus-next replies to BlueZ with a generic `org.freedesktop.DBus.Python...` error name, and BlueZ seems to report that to the phone as a *successful* write. So `on_write` raises `dbus_next.errors.DBusError("org.bluez.Error.Failed", reason)`. A debug run confirmed that BlueZ receives that error reply for a write it expects a reply to (`no_reply_expected=False`).
+  - **Not verified:** that the phone actually gets an ATT error. It should be 0x80. nRF Connect on iOS showed no alert, and its write result wasn't found in its logs. Check with `sudo btmon` in a terminal on the board (not Claude Code's `!` mode), or from the C# app later. Only tick step 2 once that's confirmed.
+  - **Harmless noise:** each rejection also logs "got unexpected error processing a message" with a traceback. That's dbus-next 0.2.3 re-raising the exception after it has sent the error reply.
+  - **Gotchas found:**
+    - **Stale bond.** The iPhone was bonded to the board from an earlier session and cached an old GATT table, so its writes never reached `on_write`. Fix: `bluetoothctl remove <phone address>` on the board, plus **Forget This Device** on the iPhone.
+    - **iOS pairing popup.** When the iPhone connects, BlueZ reads the iPhone's protected services (Battery, Current Time), so iOS asks to pair. Tap **Pair**: Cancel drops the connection.
+    - **nRF Connect on iOS:** set the format to UTF8. Its write type is chosen automatically.
+  - **Next:** confirm the ATT error with btmon (optional), tick step 2, then start step 3 (`bridge.py` with `FakeBridge`).
+
 - **2026-11-13 (later): Step 1 done.** `device/ble_server.py` advertises as `Checklist-F279` with the service and all four characteristics.
   - **Checkpoint passed:** from nRF Connect, a read of `press` returned `0`, and writing `Drink water|Glass by sink|1|0` to `message` printed in the terminal.
   - **How the name works:** it comes from `bluetoothctl show` (the `Controller` line). bless sets the adapter alias to it.
