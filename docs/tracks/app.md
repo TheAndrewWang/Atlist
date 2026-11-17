@@ -40,7 +40,7 @@ Done during the repo reset:
 ### [x] 1. Protocol contract
 `docs/Protocol.md`, written with the team.
 
-### [ ] 2. App skeleton: tabs and colors
+### [x] 2. App skeleton: tabs and colors
 - **Concepts:**
   - XAML + code-behind: two files, one `partial` class.
   - Shell `<TabBar>` navigation. `ContentTemplate="{DataTemplate ...}"` creates a page the first time its tab is tapped.
@@ -110,6 +110,17 @@ Do these one at a time, in this order:
 ## Progress log
 
 Newest entry first. At the end of each session, write what you finished, what's half-done, and the next action.
+
+- **2026-11-15:**
+  - Step 2 done and committed (`210219a`). Builds with 0 errors. Box ticked.
+  - Step 3 is split into 3a (package + models), 3b (`IDeviceService` + `FakeDeviceService`), 3c (`DevicesViewModel` + DI in `MauiProgram.cs`), 3d (Devices cards in XAML).
+  - 3a half-done: `Models/Device.cs` and `Models/Message.cs` are written but not committed and **won't build yet**:
+    - `namespace Atlist.Models` needs a `;` (file-scoped namespace).
+    - The properties are `private`. Make them `public`, or bindings and other classes can't see them.
+    - The enums need `public` too (`public enum ...`). Otherwise you get CS0053, because a public property can't have a less visible type.
+    - Initialize the strings (`= "";`) and `TargetIds = new();` to clear the CS8618 warnings. `List<String>` works, but `List<string>` is the usual spelling.
+    - CommunityToolkit.Mvvm isn't installed yet: `dotnet add Atlist/Atlist.csproj package CommunityToolkit.Mvvm`.
+  - **Next:** fix the models, install the package, build (`dotnet build Atlist/Atlist.csproj -f net10.0-android`), commit, then 3b.
 
 - **2026-10-30 (repo reset):**
   - The tracks now live on `main`, and this track's branch is `app`.
