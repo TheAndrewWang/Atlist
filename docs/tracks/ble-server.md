@@ -64,7 +64,7 @@ It's the device's Bluetooth side. The UNO Q's Bluetooth is on its Linux side, no
 - **Build:** `test_protocol.py`: the Protocol.md examples, plus one test per rejection rule.
 - **Checkpoint:** `pytest` passes. A bad write from nRF Connect is rejected (nRF Connect shows an error), and a good one prints the parsed object.
 
-### [ ] 3. The Bridge interface and a fake
+### [x] 3. The Bridge interface and a fake
 - **Concepts:** program against an interface, so you can swap the real thing for a fake and test without the sketch.
 - **Build:** `bridge.py`:
   - A class with the Protocol.md Bridge calls: `show(line1, line2, beep, hold)`, `rest(line1, line2)`, `pair_show(passkey)`, `pair_end()`, `clear_done()`, plus a way to register handlers for `pressed(count)` and `pair_hold()`.
@@ -112,6 +112,16 @@ It's the device's Bluetooth side. The UNO Q's Bluetooth is on its Linux side, no
 ## Progress log
 
 Newest entry first. At the end of each session, write what you finished, what's half-done, and the next action.
+
+- **2026-11-20: Step 3 done.** `device/bridge.py` holds the `Bridge` interface and `FakeBridge`. `ble_server.py` now calls `bridge.show(...)` after every valid `message` write.
+  - **Checkpoint passed:** writing `Drink water|Glass by sink|1|0` from nRF Connect (iPhone) printed `show('Drink water', 'Glass by sink', 1, 0)`.
+  - **Design:**
+    - The five Python -> sketch calls are `async`, so `RealBridge` can wrap the blocking `Bridge.call` in `asyncio.to_thread` in step 6 without the server changing.
+    - Handlers are registered with `on_pressed(handler)` / `on_pair_hold(handler)`, and the bridge always calls them **on the asyncio loop's thread**. `FakeBridge` reads stdin on a background thread and hands each line over with `loop.call_soon_threadsafe`. `RealBridge` must do the same, because its events arrive on `Bridge.read_loop`'s thread.
+    - bless calls `on_write` synchronously, so it starts the bridge call as a task through `_run()`. That keeps a reference in `_tasks` and logs an exception or a non-`True` result. The BLE write succeeds once the payload is valid and doesn't wait for the sketch.
+  - **FakeBridge keys:** `p` + Enter is a press, which prints `pressed(N)` and calls the handler. `h` + Enter is a 3-second hold. Nothing listens for presses yet.
+  - **Still open from step 2:** confirming the phone gets ATT error 0x80 for a rejected write. Use `sudo btmon` in a real terminal.
+  - **Next:** step 4. In `main()`, register `bridge.on_pressed(...)` to set `press` to `encode_press(count)` and notify subscribers. Check bless 0.3.0's notify call (likely `server.update_value(SERVICE_UUID, PRESS_UUID)`) against the installed source before using it.
 
 - **2026-11-17: Step 2 almost done.** `device/protocol.py` + `device/test_protocol.py` are committed, and **49 tests pass**. `on_write` in `ble_server.py` now parses every write before storing it.
   - **On the board with nRF Connect (iPhone):**
