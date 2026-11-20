@@ -2,9 +2,12 @@
 
 # **What the device is**
 
-**Atlist is a set of small devices, each about the size of a clock radio, that stand on a table or hang on a wall. Each device stands for one daily task, such as taking medication, brushing teeth, drinking water, or taking keys and wallet.**
+**Atlist is a set of small devices, each about the size of a clock radio, that stands on a table or hangs on a wall. Each device represents and works for one daily task or range of similar activities, such as taking medication, brushing teeth, drinking water, exercise, or taking keys and wallet.**
 
-**Each device sits where its task happens. For example, the medication device sits next to the medicine cabinet. It shows the task on a small screen. The person presses one large button to check the task off. A device that shows "done" tells the person, at a glance, that they already did that task. After a set amount of time the device resets to "not done" for the next cycle.**
+<img width="654px" height="407px" alt="image" src="https://github.com/user-attachments/assets/905b39b5-1c02-4975-a9ea-ec2113bfd8dd" />
+
+
+**Each device sits where its task occurs most frequently. For example, the medication device sits next to the medicine cabinet. It shows the task on a small screen. The person presses one large button to check the task off. A device that shows "done" tells the person, at a glance, that they already did that task. After a set amount of time the device resets to "not done" for the next cycle.**
 
 **The person using it never logs in, never sees a menu and never types. Atlist is a reminder, not a medical tracker.**
 
@@ -16,7 +19,7 @@
 | ----- | ----- |
 | **As simple as a light switch** | **One main control per device. No modes the user can reach.** |
 | **One task per device** | **Each unit has one fixed task. The task is shown on the screen and on a swappable label.** |
-| **Large and tactile** | **The main button is big, high-contrast and gives a clear click.** |
+| **Intuitive and tactile** | **The device is simple enough for anyone to use and requires PHYSICAL interaction.** |
 | **No sense of surveillance** | **No microphone and no camera on the device, ever.** |
 | **Done is obvious** | **Done vs not done must be easy to read. A light that can be seen from across the room is a future option.** |
 | **Works where the task is** | **Must stand on a counter or hang on a wall, and survive a bathroom or kitchen.** |
