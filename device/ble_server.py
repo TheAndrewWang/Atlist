@@ -1,4 +1,4 @@
-"""Atlist BLE server: advertise the service and validate writes (steps 1-2).
+"""Atlist BLE server: advertise, validate writes, forward to the Bridge (steps 1-3).
 
 Runs on the UNO Q's Linux side. See docs/Protocol.md for the contract.
 """
@@ -16,7 +16,14 @@ from bless import (
 )
 from dbus_next.errors import DBusError
 
-from protocol import ProtocolError, parse_clock, parse_config, parse_message
+from bridge import Bridge, FakeBridge
+from protocol import (
+    Message,
+    ProtocolError,
+    parse_clock,
+    parse_config,
+    parse_message,
+)
 
 # UUIDs from docs/Protocol.md
 SERVICE_UUID = "101ef69f-fe23-4d35-8a19-caa905720000"
@@ -42,6 +49,15 @@ PARSERS = {
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Set in main(). on_write is a plain callback from bless, so it reaches the
+# bridge and the loop through these.
+bridge: Bridge | None = None
+loop: asyncio.AbstractEventLoop | None = None
+
+# Strong references to running bridge tasks, so they aren't garbage
+# collected before they finish. Each removes itself when done.
+_tasks: set[asyncio.Task] = set()
 
 
 def bluetooth_address() -> str:
@@ -97,10 +113,39 @@ def on_write(characteristic: BlessGATTCharacteristic, value: bytearray) -> None:
     characteristic.value = value
     print(f"Write {name}: {parsed}", flush=True)
 
+    if isinstance(parsed, Message):
+        _run(bridge.show(parsed.line1, parsed.line2, parsed.beep, parsed.hold))
+
+
+def _run(coro) -> None:
+    """Start a bridge call from a sync callback and log its outcome.
+
+    The BLE write has already succeeded by now: the payload was valid, and
+    a slow or failed sketch shouldn't hold up or fail the phone's write.
+    """
+    task = loop.create_task(coro)
+    _tasks.add(task)
+    task.add_done_callback(_finished)
+
+
+def _finished(task: asyncio.Task) -> None:
+    _tasks.discard(task)
+    if task.cancelled():
+        return
+    if (e := task.exception()) is not None:
+        logger.error(f"Bridge call failed: {e!r}")
+    elif task.result() is not True:
+        logger.warning(f"Bridge call returned {task.result()!r}")
+
 
 async def main() -> None:
+    global bridge, loop
+    loop = asyncio.get_running_loop()
+    bridge = FakeBridge()
+    bridge.start(loop)
+
     name = device_name(bluetooth_address())
-    server = BlessServer(name=name, loop=asyncio.get_running_loop())
+    server = BlessServer(name=name, loop=loop)
     server.read_request_func = on_read
     server.write_request_func = on_write
 
