@@ -71,7 +71,7 @@ It's the device's Bluetooth side. The UNO Q's Bluetooth is on its Linux side, no
   - `FakeBridge`: prints each call. Typing `p` + Enter pretends to be a button press, and `h` a 3-second hold.
 - **Checkpoint:** writing a message in nRF Connect prints `show('Drink water', 'Glass by sink', 1, 0)`.
 
-### [ ] 4. Press notifications
+### [x] 4. Press notifications
 - **Concepts:** notify: the server pushes a new value to subscribed phones, so they don't have to keep asking.
 - **Build:** when the Bridge reports `pressed(count)`, set `press` to `encode_press(count)` and notify.
 - **Checkpoint:** in nRF Connect, subscribe to `press`, type `p`, and see `1`, `2`, `3`…
@@ -112,6 +112,14 @@ It's the device's Bluetooth side. The UNO Q's Bluetooth is on its Linux side, no
 ## Progress log
 
 Newest entry first. At the end of each session, write what you finished, what's half-done, and the next action.
+
+- **2026-11-20 (later): Step 4 done.** `notify_press(server, count)` in `ble_server.py` is registered with `bridge.on_pressed(...)` after `server.start()`.
+  - **Checkpoint passed:** subscribed to `press` in nRF Connect (iPhone), sent `p` three times, and the phone showed `1`, `2`, `3` without tapping read.
+  - **bless 0.3.0 notify, checked against the installed source:** set `server.get_characteristic(PRESS_UUID).value` first, then call `server.update_value(SERVICE_UUID, PRESS_UUID)`. It returns `False` only if the service isn't found. It pushes the stored value, so setting the value alone doesn't notify.
+  - **nRF Connect on iOS:** the subscribe button is the **down arrow with a line under it**. The plain down arrow is a single read. Subscribing only gives a short vibration, and bless logs nothing for it.
+  - **Testing presses without a terminal:** the server can read stdin from a named pipe (`mkfifo keys; python -u ble_server.py < keys`, with a `sleep infinity > keys` holding it open), then `echo p > keys` sends a press.
+  - **Still open from step 2:** the ATT 0x80 check with `sudo btmon`.
+  - **Next:** step 5, clock and config. `clock` writes store an offset (phone time minus system time) and never change the system clock. `config` writes call `bridge.rest(rest1, rest2)` and save `state.json` atomically (write a temp file, then `os.replace`). On startup, load `state.json` and send the resting screen. Keep the state logic in its own module so pytest can cover it without Bluetooth.
 
 - **2026-11-20: Step 3 done.** `device/bridge.py` holds the `Bridge` interface and `FakeBridge`. `ble_server.py` now calls `bridge.show(...)` after every valid `message` write.
   - **Checkpoint passed:** writing `Drink water|Glass by sink|1|0` from nRF Connect (iPhone) printed `show('Drink water', 'Glass by sink', 1, 0)`.

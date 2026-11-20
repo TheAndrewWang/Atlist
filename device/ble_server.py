@@ -1,4 +1,4 @@
-"""Atlist BLE server: advertise, validate writes, forward to the Bridge (steps 1-3).
+"""Atlist BLE server: advertise, validate writes, forward to the Bridge, notify presses (steps 1-4).
 
 Runs on the UNO Q's Linux side. See docs/Protocol.md for the contract.
 """
@@ -20,6 +20,7 @@ from bridge import Bridge, FakeBridge
 from protocol import (
     Message,
     ProtocolError,
+    encode_press,
     parse_clock,
     parse_config,
     parse_message,
@@ -138,6 +139,21 @@ def _finished(task: asyncio.Task) -> None:
         logger.warning(f"Bridge call returned {task.result()!r}")
 
 
+def notify_press(server: BlessServer, count: int) -> None:
+    """Set `press` to the new count and notify subscribed phones.
+
+    The bridge calls this on the asyncio loop's thread, so touching bless
+    here is safe. In bless 0.3.0, update_value() pushes the characteristic's
+    stored value to subscribers, so set .value first.
+    """
+    press = server.get_characteristic(PRESS_UUID)
+    press.value = bytearray(encode_press(count))
+    if server.update_value(SERVICE_UUID, PRESS_UUID):
+        logger.info(f"Notify press -> {count}")
+    else:
+        logger.error("Notify press failed: service not found")
+
+
 async def main() -> None:
     global bridge, loop
     loop = asyncio.get_running_loop()
@@ -171,6 +187,7 @@ async def main() -> None:
     )
 
     await server.start()
+    bridge.on_pressed(lambda count: notify_press(server, count))
     logger.info(f"Advertising as {name}. Ctrl+C to stop.")
 
     try:
