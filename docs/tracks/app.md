@@ -111,6 +111,21 @@ Do these one at a time, in this order:
 
 Newest entry first. At the end of each session, write what you finished, what's half-done, and the next action.
 
+- **2026-11-20:**
+  - 3b done and committed. Builds with 0 errors. Only warning: CS0067 (`Pressed` never raised yet), expected until the fake can simulate a press.
+    - `FakeDeviceService.cs`: `SendAsync` (`ThrowIfNull` on both args, `Waiting` by default, `Delivered` if connected, sets `SentAt`, adds to `_sent`), `Pressed` event declared, `_nearby` field (4 unpaired devices, one duplicate Id `6C5B` to test skipping), `ScanAsync` (`foreach`, `await Task.Delay(1000, ct)`, skips already-paired Ids, `yield return`, `[EnumeratorCancellation]` on `ct`).
+  - Covered: no truthy/falsy in C#; enum values need the type prefix; enum fields default to their first value; event = declaration with no body, raise with `?.Invoke`, subscribe with `+=`; `yield return`; cancellation is noticed at each `await` that takes `ct`; `[EnumeratorCancellation]` makes `.WithCancellation(ct)` work too.
+  - Still shaky: event (who listens), `IAsyncEnumerable` + `CancellationToken`.
+  - Open question for the teammate: if the ViewModel did `new FakeDeviceService()` itself, what breaks when switching to real BLE?
+  - **Next:** 3c: answer the open question, then `DevicesViewModel` (`ObservableObject`, gets `IDeviceService` through its constructor, loads devices) and register both in `MauiProgram.cs`.
+
+- **2026-11-19:**
+  - 3a done and committed (`f054c77`). Builds with 0 errors; the only warning, XA0033 (Java version string), is harmless.
+  - 3b half-done, uncommitted in `Atlist/Services/`:
+    - `IDeviceService.cs` has all 5 members but is **missing `using Atlist.Models;`**.
+    - `FakeDeviceService.cs` has the 3-device list field (hex IDs, one `OutOfRange`, locations set) and `using Atlist.Models;`. It doesn't implement any interface members yet, so the build fails for now.
+  - **Next:** add the `using` to `IDeviceService.cs`, then in the fake write `GetDevicesAsync` (`Task.FromResult`), `PairAsync` (add to list), `SendAsync` (save to a second `List<Message>`, `Delivered` if connected, else `Waiting`), and `public event Action<string, int>? Pressed;`. Then plan `ScanAsync` (where found devices come from, when it ends, how `ct` stops it) before writing it. Build, commit, then 3c.
+
 - **2026-11-15:**
   - Step 2 done and committed (`210219a`). Builds with 0 errors. Box ticked.
   - Step 3 is split into 3a (package + models), 3b (`IDeviceService` + `FakeDeviceService`), 3c (`DevicesViewModel` + DI in `MauiProgram.cs`), 3d (Devices cards in XAML).
