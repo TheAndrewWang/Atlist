@@ -3,7 +3,7 @@
 **Owner:** Ethan
 **Branch:** `firmware`
 **Code lives in:** `device/sketch/sketch.ino` (was `device/Atlist.ino`), the existing button + LCD + beeper test, which this track grows. `device/` is shared with the BLE server track (see the layout in `docs/tracks/README.md`). Test helpers: `device/ping/ping.ino` + `device/ping_test.py` check the Bridge link on their own.
-**Flashing:** the repo's `device/sketch/sketch.ino` is the source of truth. Edit it only in the repo, then paste it into an Arduino App Lab app's `sketch/sketch.ino` and press Run. Never edit the App Lab copy.
+**Flashing:** the repo's `device/sketch/sketch.ino` is the source of truth. Edit it only in the repo, then paste it into an Arduino App Lab app's `sketch/sketch.ino` and press Run. Never edit the App Lab copy. Also copy `device/sketch/sketch.yaml` over the app's `sketch/sketch.yaml`: App Lab only compiles with the libraries listed there (Bridge + `LiquidCrystal I2C (1.1.2)`).
 **Builds against:** `docs/Protocol.md`: the **Bridge** section and the Rules
 **Tests alone with:** a tiny Python test script on the UNO Q's Linux side (or Serial commands) in place of the BLE server
 
