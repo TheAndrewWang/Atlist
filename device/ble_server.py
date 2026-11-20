@@ -1,4 +1,5 @@
-"""Atlist BLE server: advertise, validate writes, forward to the Bridge, notify presses (steps 1-4).
+"""Atlist BLE server: advertise, validate writes, forward to the Bridge, notify presses,
+keep clock and config in state.json (steps 1-5).
 
 Runs on the UNO Q's Linux side. See docs/Protocol.md for the contract.
 """
@@ -18,6 +19,8 @@ from dbus_next.errors import DBusError
 
 from bridge import Bridge, FakeBridge
 from protocol import (
+    Clock,
+    Config,
     Message,
     ProtocolError,
     encode_press,
@@ -25,6 +28,7 @@ from protocol import (
     parse_config,
     parse_message,
 )
+from state import State, load_state, save_state
 
 # UUIDs from docs/Protocol.md
 SERVICE_UUID = "101ef69f-fe23-4d35-8a19-caa905720000"
@@ -55,6 +59,7 @@ logger = logging.getLogger(__name__)
 # bridge and the loop through these.
 bridge: Bridge | None = None
 loop: asyncio.AbstractEventLoop | None = None
+state: State = State()
 
 # Strong references to running bridge tasks, so they aren't garbage
 # collected before they finish. Each removes itself when done.
@@ -111,11 +116,36 @@ def on_write(characteristic: BlessGATTCharacteristic, value: bytearray) -> None:
     except ProtocolError as e:
         logger.warning(f"Rejected {name} write {bytes(value)!r}: {e}")
         raise DBusError("org.bluez.Error.Failed", str(e)) from e
+
+    if isinstance(parsed, Clock):
+        _commit(name, state.with_clock(parsed))
+    elif isinstance(parsed, Config):
+        _commit(name, state.with_config(parsed))
+
     characteristic.value = value
     print(f"Write {name}: {parsed}", flush=True)
 
     if isinstance(parsed, Message):
         _run(bridge.show(parsed.line1, parsed.line2, parsed.beep, parsed.hold))
+    elif isinstance(parsed, Config):
+        _run(bridge.rest(parsed.rest1, parsed.rest2))
+    elif isinstance(parsed, Clock):
+        logger.info(f"Local now: {state.local_now():%Y-%m-%d %H:%M:%S %z}")
+
+
+def _commit(name: str, new_state: State) -> None:
+    """Save `new_state` to state.json, then make it current.
+
+    If the save fails, the write is rejected and nothing changes, so the
+    phone knows the setting didn't stick.
+    """
+    global state
+    try:
+        save_state(new_state)
+    except OSError as e:
+        logger.error(f"Couldn't save {name} to state.json: {e!r}")
+        raise DBusError("org.bluez.Error.Failed", f"couldn't save {name}") from e
+    state = new_state
 
 
 def _run(coro) -> None:
@@ -155,10 +185,18 @@ def notify_press(server: BlessServer, count: int) -> None:
 
 
 async def main() -> None:
-    global bridge, loop
+    global bridge, loop, state
     loop = asyncio.get_running_loop()
     bridge = FakeBridge()
     bridge.start(loop)
+
+    # Bring back the resting screen from the last config write.
+    state = load_state()
+    if state.config is not None:
+        logger.info(f"Loaded state.json: {state.config}")
+        _run(bridge.rest(state.config.rest1, state.config.rest2))
+    else:
+        logger.info("No config in state.json yet")
 
     name = device_name(bluetooth_address())
     server = BlessServer(name=name, loop=loop)

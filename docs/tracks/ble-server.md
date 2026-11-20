@@ -76,7 +76,7 @@ It's the device's Bluetooth side. The UNO Q's Bluetooth is on its Linux side, no
 - **Build:** when the Bridge reports `pressed(count)`, set `press` to `encode_press(count)` and notify.
 - **Checkpoint:** in nRF Connect, subscribe to `press`, type `p`, and see `1`, `2`, `3`…
 
-### [ ] 5. Clock and config
+### [x] 5. Clock and config
 - **Build:**
   - `clock` writes set an offset between the phone's time and the system time, used for "local now". Don't change the system clock.
   - `config` writes call `bridge.rest(rest1, rest2)` and save the config to `state.json`. Write a temporary file, then rename it over the old one, so a power cut can't leave a half-written file.
@@ -112,6 +112,16 @@ It's the device's Bluetooth side. The UNO Q's Bluetooth is on its Linux side, no
 ## Progress log
 
 Newest entry first. At the end of each session, write what you finished, what's half-done, and the next action.
+
+- **2026-11-20 (evening): Step 5 done.** The new `device/state.py` holds a frozen `State`: the clock skew, the phone's UTC offset and the last `Config`. `ble_server.py` saves `clock` and `config` writes into it, and loads it at startup. `device/test_state.py` adds 14 tests, so **63 pass** in all.
+  - **Checkpoint passed:**
+    - From nRF Connect, a `config` write printed `rest('TAKE MEDS', 'Due 8;00 AM')`. A `clock` write of `1795700000|-300` logged `Local now: 2026-11-26 08:33:20 -0500`.
+    - After a restart, the server logged `Loaded state.json: Config(...)` and sent `rest(...)` again before it started advertising.
+  - **Clock:** the server stores `clock_skew = phone epoch - time.time()` and the offset. The system clock is never changed. `state.local_now()` gives the phone's local time, which step 8 and the schedule will need.
+  - **Saving:** `save_state()` writes a temporary file in `device/`, then `fsync`s it and `os.replace`s it over `state.json`. A test checks that a failed save leaves the old file as it was. `on_write` saves **before** swapping in the new state, through `_commit()`. If the save fails, it raises `org.bluez.Error.Failed`, so the phone's write fails and nothing changes.
+  - **Loading:** a missing, corrupt or wrong-shaped `state.json` is logged and replaced with an empty `State`, so the server still starts. `device/state.json` is gitignored.
+  - **Still open from step 2:** the ATT 0x80 check with `sudo btmon`.
+  - **Next:** step 6, `RealBridge` (M1, with Ethan). It talks MessagePack-RPC to `/var/run/arduino-router.sock`, or uses `arduino_app_bricks` if it installs into `~/atlist-venv`. It needs the sketch to provide `show` / `rest` / `pair_show` / `pair_end` / `clear_done` and to notify `pressed` / `pair_hold`. Add a command-line flag to choose `FakeBridge` or `RealBridge`.
 
 - **2026-11-20 (later): Step 4 done.** `notify_press(server, count)` in `ble_server.py` is registered with `bridge.on_pressed(...)` after `server.start()`.
   - **Checkpoint passed:** subscribed to `press` in nRF Connect (iPhone), sent `p` three times, and the phone showed `1`, `2`, `3` without tapping read.

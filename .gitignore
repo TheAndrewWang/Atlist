@@ -14,3 +14,7 @@ obj/
 __pycache__/
 .pytest_cache/
 .venv/
+
+# Device runtime state
+device/state.json
+device/.state.json.*.tmp
