@@ -1,9 +1,12 @@
-"""Atlist BLE server: advertise, validate writes, forward to the Bridge, notify presses,
-keep clock and config in state.json (steps 1-5).
+"""Atlist BLE server: the checklist device's Bluetooth side (steps 1-6).
+
+Advertises, validates writes, forwards them to the sketch over Bridge,
+notifies presses, and keeps clock and config in state.json.
 
 Runs on the UNO Q's Linux side. See docs/Protocol.md for the contract.
 """
 
+import argparse
 import asyncio
 import logging
 import re
@@ -17,7 +20,7 @@ from bless import (
 )
 from dbus_next.errors import DBusError
 
-from bridge import Bridge, FakeBridge
+from bridge import Bridge, FakeBridge, RealBridge
 from protocol import (
     Clock,
     Config,
@@ -184,10 +187,11 @@ def notify_press(server: BlessServer, count: int) -> None:
         logger.error("Notify press failed: service not found")
 
 
-async def main() -> None:
+async def main(use_real_bridge: bool) -> None:
     global bridge, loop, state
     loop = asyncio.get_running_loop()
-    bridge = FakeBridge()
+    bridge = RealBridge() if use_real_bridge else FakeBridge()
+    logger.info(f"Using {type(bridge).__name__}")
     bridge.start(loop)
 
     # Bring back the resting screen from the last config write.
@@ -238,7 +242,16 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument(
+        "--bridge",
+        choices=("fake", "real"),
+        default="fake",
+        help="fake: print calls, type p/h for the button (default). "
+             "real: talk to the sketch through arduino-router.",
+    )
+    args = parser.parse_args()
     try:
-        asyncio.run(main())
+        asyncio.run(main(args.bridge == "real"))
     except KeyboardInterrupt:
         pass

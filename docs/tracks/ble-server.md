@@ -113,6 +113,23 @@ It's the device's Bluetooth side. The UNO Q's Bluetooth is on its Linux side, no
 
 Newest entry first. At the end of each session, write what you finished, what's half-done, and the next action.
 
+- **2026-11-20 (night): Step 6 code done, checkpoint waits on the sketch.** `RealBridge` is in `device/bridge.py`. Choose a bridge with `ble_server.py --bridge fake|real`. `fake` is the default.
+  - **How it works:** an asyncio client for arduino-router's Unix socket (`$APP_SOCKET` or `/var/run/arduino-router.sock`), so it needs no thread.
+    - It speaks the same MessagePack-RPC as App Lab's `arduino.app_utils.Bridge` 0.10.1, which was read from the `python-apps-base:0.10.1` image on the board:
+      - request `[0, id, method, args]`
+      - response `[1, id, error, result]`, where `error` is `[code, msg]`
+      - notification `[2, method, args]`
+    - On every connect it calls `$/register` for `pressed` and `pair_hold`. Code `0x05` (route already exists) counts as OK.
+    - It reconnects every 3 s. A call waits for the connection and then the reply within 10 s, and raises `TimeoutError`, `BridgeError` or `ConnectionError`.
+    - If the sketch uses `Bridge.call("pressed", n)` instead of `notify`, it's handled the same way and answered `True`.
+  - **Tests:** `device/test_bridge.py` runs a fake router on a temporary socket: 12 tests, **75 pass** in all. `device/requirements.txt` pins bless, dbus-next, msgpack and pytest.
+  - **Against the real router:** it connected and both registrations succeeded. `show` returned `method show not available (code 2)`, because the sketch doesn't provide it yet. Note that the router's own "not found" code is **2**, not App Lab's `0xFE`.
+  - **Firmware status (`origin/firmware`, `device/sketch/sketch.ino`):** it calls `Bridge.begin()` but has **no `Bridge.provide` and no `Bridge.notify("pressed", ...)` yet**. The press count and `onPress()` already exist.
+  - **Next:**
+    - Ethan adds `Bridge.provide_safe("show" | "rest" | "pair_show" | "pair_end" | "clear_done", ...)`, each returning `bool`, and `Bridge.notify("pressed", pressCount)` in `onPress()`.
+    - Then run `ble_server.py --bridge real` for the M1 checkpoint: a write shows on the LCD with a beep, and the button sends a `press` notification. Tick step 6 only then.
+    - The `device/` layout still needs agreeing. Firmware already uses `device/sketch/`, while the server is in `device/` directly.
+
 - **2026-11-20 (evening): Step 5 done.** The new `device/state.py` holds a frozen `State`: the clock skew, the phone's UTC offset and the last `Config`. `ble_server.py` saves `clock` and `config` writes into it, and loads it at startup. `device/test_state.py` adds 14 tests, so **63 pass** in all.
   - **Checkpoint passed:**
     - From nRF Connect, a `config` write printed `rest('TAKE MEDS', 'Due 8;00 AM')`. A `clock` write of `1795700000|-300` logged `Local now: 2026-11-26 08:33:20 -0500`.
