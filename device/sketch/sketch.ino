@@ -32,9 +32,13 @@ unsigned long lastChange = 0;
 // Total presses since boot (becomes the "pressed" count in step 4)
 unsigned int pressCount = 0;
 
-// Resting screen text (Linux sets it with "rest" in step 3)
+// Resting screen text (Linux sets it with "rest")
 String restLine1 = "Atlist";
 String restLine2 = "Ready";
+
+// Message state. A message stays on screen until something calls showRest().
+bool messageShowing = false;
+int  messageHold    = 0;  // 0 = until pressed, 1 = 1 hour, 2 = next reminder (used in step 5)
 
 // ---------------------------------------------------------------------------
 
@@ -60,8 +64,36 @@ void beep() {
   Monitor.println("*beep*");
 }
 
+// Shows the resting screen. Whatever message was up is now gone.
 void showRest() {
   showLines(restLine1, restLine2);
+  messageShowing = false;
+}
+
+// --- Bridge: Linux -> sketch (docs/Protocol.md, Bridge table) --------------
+// Registered with provide_safe, so these run between loop() passes, never in
+// the middle of an LCD write. Parameter names avoid "beep" so they don't hide
+// the beep() function.
+
+// Bridge "show": show a message, beep if asked, remember hold for step 5.
+bool showMessage(String line1, String line2, int doBeep, int hold) {
+  showLines(line1, line2);
+  if (doBeep == 1) {
+    beep();
+  }
+  messageShowing = true;
+  messageHold    = hold;
+  return true;
+}
+
+// Bridge "rest": save new resting text; show it now only if no message is up.
+bool setRest(String line1, String line2) {
+  restLine1 = line1;
+  restLine2 = line2;
+  if (!messageShowing) {
+    showRest();
+  }
+  return true;
 }
 
 // A debounced button press (real or typed).
@@ -122,6 +154,13 @@ void setup() {
   }
 
   showRest();
+
+  if (!Bridge.provide_safe("show", showMessage)) {
+    Monitor.println("ERROR: could not provide show");
+  }
+  if (!Bridge.provide_safe("rest", setRest)) {
+    Monitor.println("ERROR: could not provide rest");
+  }
 }
 
 void loop() {
