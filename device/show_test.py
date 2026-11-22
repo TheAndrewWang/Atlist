@@ -1,9 +1,10 @@
-"""Step 3 test: call the sketch's "show" and "rest" over Bridge.
+"""Step 3/5 test: call the sketch's "show", "rest" and "clear_done" over Bridge.
 
 Run on the UNO Q's Linux side, after flashing device/sketch:
     ~/atlist-venv/bin/python device/show_test.py                  # checkpoint: Drink water + beep
     ~/atlist-venv/bin/python device/show_test.py show L1 L2 BEEP HOLD
     ~/atlist-venv/bin/python device/show_test.py rest L1 L2
+    ~/atlist-venv/bin/python device/show_test.py clear_done
 
 Reuses call() from ping_test.py (same folder).
 """
@@ -20,6 +21,8 @@ def main(argv):
         method, args = "show", [argv[1], argv[2], int(argv[3]), int(argv[4])]
     elif argv[0] == "rest" and len(argv) == 3:
         method, args = "rest", [argv[1], argv[2]]
+    elif argv[0] == "clear_done" and len(argv) == 1:
+        method, args = "clear_done", []
     else:
         sys.exit(__doc__)
 

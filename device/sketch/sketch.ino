@@ -2,8 +2,8 @@
 // Drives the LCD, beeper and button. Linux tells it what to show over Bridge
 // (see docs/Protocol.md, "Bridge" section).
 //
-// No button on hand yet, so the App Lab serial monitor stands in:
-//   - every screen update is also printed to Monitor
+// No button or speaker on hand yet, so the App Lab serial monitor stands in:
+//   - every screen update is also printed to Monitor, and beeps as *beep*
 //   - type "p" + Enter in the serial monitor to simulate a short press
 //   - type "h" + Enter to simulate a 3-second hold (pair_hold)
 //   - type "t" + Enter to run the 16-character cut test
@@ -23,9 +23,25 @@ const int BUTTON_PIN  = 5;
 const int SPEAKER_PIN = 8;
 const int BEEP_HZ     = 1200;
 const int BEEP_MS     = 150;
-const unsigned long DEBOUNCE_MS = 25;
-const unsigned long PAIR_HOLD_MS = 3000;  // hold this long to enter pair mode
-const unsigned int  LCD_COLS    = 16;
+const unsigned long DEBOUNCE_MS  = 25;
+const unsigned long PAIR_HOLD_MS = 3000;     // hold this long to enter pair mode
+const unsigned long HOLD_1_MS    = 3600000;  // hold 1: message times out after 60 min
+const unsigned int  LCD_COLS     = 16;
+
+// Check mark for the done state, stored in the LCD's custom character slot 1.
+// (Slot 0 would be character 0, which ends a String early.)
+const uint8_t CHECK_SLOT = 1;
+const char    CHECK_CHAR = '\x01';
+uint8_t checkBits[8] = {
+  0b00000,
+  0b00001,
+  0b00011,
+  0b10110,
+  0b11100,
+  0b01000,
+  0b00000,
+  0b00000,
+};
 
 // Button debounce state
 int stableState = LOW;
@@ -39,13 +55,25 @@ bool holdSent = false;         // pair_hold already sent for this press
 // Total presses since boot, sent to Linux as "pressed"
 unsigned int pressCount = 0;
 
+// --- State -----------------------------------------------------------------
+// The device is always in exactly one state; events (show, press, timeout,
+// rest, clear_done) move it between them and then redraw the screen.
+// PAIR_MODE joins in step 6.
+enum State { RESTING, SHOWING_MESSAGE };
+State state = RESTING;
+
 // Resting screen text (Linux sets it with "rest")
 String restLine1 = "Atlist";
 String restLine2 = "Ready";
 
-// Message state. A message stays on screen until something calls showRest().
-bool messageShowing = false;
-int  messageHold    = 0;  // 0 = until pressed, 1 = 1 hour, 2 = next reminder (used in step 5)
+// The current message (Linux sets it with "show")
+String msgLine1 = "";
+String msgLine2 = "";
+int msgHold = 0;                 // 0 = until pressed, 1 = pressed or 60 min, 2 = until next show
+unsigned long msgShownAt = 0;    // millis() when the message went up, for hold 1
+
+// Task checked off this reset cycle. Set by any short press, cleared by clear_done.
+bool done = false;
 
 // ---------------------------------------------------------------------------
 
@@ -62,8 +90,13 @@ void showLines(const String& l1, const String& l2) {
     lcd.print(b);
   }
 
-  Monitor.println("[LCD] " + a);
-  Monitor.println("[LCD] " + b);
+  // The serial monitor can't show the LCD's custom character, so print a "✓".
+  String ma = a;
+  String mb = b;
+  ma.replace(String(CHECK_CHAR), "✓");
+  mb.replace(String(CHECK_CHAR), "✓");
+  Monitor.println("[LCD] " + ma);
+  Monitor.println("[LCD] " + mb);
 }
 
 void beep() {
@@ -71,10 +104,24 @@ void beep() {
   Monitor.println("*beep*");
 }
 
-// Shows the resting screen. Whatever message was up is now gone.
+// Line 1 with the done mark in front ("✓ TAKE MEDS") while the task is done.
+String withDone(const String& line1) {
+  return done ? String(CHECK_CHAR) + " " + line1 : line1;
+}
+
+// Draws whatever the current state says should be on screen.
+void drawScreen() {
+  if (state == SHOWING_MESSAGE) {
+    showLines(withDone(msgLine1), msgLine2);
+  } else {
+    showLines(withDone(restLine1), restLine2);
+  }
+}
+
+// Goes back to the resting screen. Whatever message was up is now gone.
 void showRest() {
-  showLines(restLine1, restLine2);
-  messageShowing = false;
+  state = RESTING;
+  drawScreen();
 }
 
 // --- Bridge: Linux -> sketch (docs/Protocol.md, Bridge table) --------------
@@ -82,14 +129,18 @@ void showRest() {
 // the middle of an LCD write. Parameter names avoid "beep" so they don't hide
 // the beep() function.
 
-// Bridge "show": show a message, beep if asked, remember hold for step 5.
+// Bridge "show": show a message, beep if asked, keep it per hold.
+// A new show replaces any message, whatever its hold.
 bool showMessage(String line1, String line2, int doBeep, int hold) {
-  showLines(line1, line2);
+  msgLine1   = line1;
+  msgLine2   = line2;
+  msgHold    = hold;
+  msgShownAt = millis();
+  state      = SHOWING_MESSAGE;
+  drawScreen();
   if (doBeep == 1) {
     beep();
   }
-  messageShowing = true;
-  messageHold    = hold;
   return true;
 }
 
@@ -97,20 +148,34 @@ bool showMessage(String line1, String line2, int doBeep, int hold) {
 bool setRest(String line1, String line2) {
   restLine1 = line1;
   restLine2 = line2;
-  if (!messageShowing) {
-    showRest();
+  if (state == RESTING) {
+    drawScreen();
   }
+  return true;
+}
+
+// Bridge "clear_done": a reset cycle ended, so the task is not done any more.
+bool clearDone() {
+  done = false;
+  drawScreen();
   return true;
 }
 
 // --- Sketch -> Linux (docs/Protocol.md, Bridge notifications) ------------
 
-// A short press (real or typed): count it and tell Linux.
+// A short press (real or typed): check off the task, tell Linux, and leave
+// the message unless its hold says to keep it (hold 2).
 void onPress() {
   pressCount++;
   beep();
-  showLines(restLine1, "Presses: " + String(pressCount));
+  done = true;
   Bridge.notify("pressed", pressCount);
+  Monitor.println("[pressed " + String(pressCount) + "]");
+
+  if (state == SHOWING_MESSAGE && msgHold != 2) {
+    state = RESTING;
+  }
+  drawScreen();
 }
 
 // The button was held 3 seconds (real or typed): ask Linux for pair mode.
@@ -118,6 +183,13 @@ void onPress() {
 void onPairHold() {
   Monitor.println("[pair_hold]");
   Bridge.notify("pair_hold");
+}
+
+// hold 1: the message goes away by itself after 60 minutes.
+void checkHoldTimeout() {
+  if (state == SHOWING_MESSAGE && msgHold == 1 && millis() - msgShownAt >= HOLD_1_MS) {
+    showRest();
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -181,6 +253,7 @@ void setup() {
   if (HAS_LCD) {
     lcd.init();
     lcd.backlight();
+    lcd.createChar(CHECK_SLOT, checkBits);
   }
 
   showRest();
@@ -191,6 +264,9 @@ void setup() {
   if (!Bridge.provide_safe("rest", setRest)) {
     Monitor.println("ERROR: could not provide rest");
   }
+  if (!Bridge.provide_safe("clear_done", clearDone)) {
+    Monitor.println("ERROR: could not provide clear_done");
+  }
 }
 
 void loop() {
@@ -198,4 +274,5 @@ void loop() {
     readButton();
   }
   readMonitor();
+  checkHoldTimeout();
 }
