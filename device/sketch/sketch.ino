@@ -2,10 +2,12 @@
 // Drives the LCD, beeper and button. Linux tells it what to show over Bridge
 // (see docs/Protocol.md, "Bridge" section).
 //
-// No LCD or button on hand yet, so the App Lab serial monitor stands in:
+// No button on hand yet, so the App Lab serial monitor stands in:
 //   - every screen update is also printed to Monitor
-//   - type "p" + Enter in the serial monitor to simulate a button press
+//   - type "p" + Enter in the serial monitor to simulate a short press
+//   - type "h" + Enter to simulate a 3-second hold (pair_hold)
 //   - type "t" + Enter to run the 16-character cut test
+//   - type "r" + Enter to show the resting screen
 // Set HAS_LCD / HAS_BUTTON to true once the hardware is wired.
 
 #include <Arduino_RouterBridge.h>
@@ -22,6 +24,7 @@ const int SPEAKER_PIN = 8;
 const int BEEP_HZ     = 1200;
 const int BEEP_MS     = 150;
 const unsigned long DEBOUNCE_MS = 25;
+const unsigned long PAIR_HOLD_MS = 3000;  // hold this long to enter pair mode
 const unsigned int  LCD_COLS    = 16;
 
 // Button debounce state
@@ -29,7 +32,11 @@ int stableState = LOW;
 int lastReading = LOW;
 unsigned long lastChange = 0;
 
-// Total presses since boot (becomes the "pressed" count in step 4)
+// Short press vs 3-second hold
+unsigned long pressStart = 0;  // when the current press began
+bool holdSent = false;         // pair_hold already sent for this press
+
+// Total presses since boot, sent to Linux as "pressed"
 unsigned int pressCount = 0;
 
 // Resting screen text (Linux sets it with "rest")
@@ -96,11 +103,21 @@ bool setRest(String line1, String line2) {
   return true;
 }
 
-// A debounced button press (real or typed).
+// --- Sketch -> Linux (docs/Protocol.md, Bridge notifications) ------------
+
+// A short press (real or typed): count it and tell Linux.
 void onPress() {
   pressCount++;
   beep();
   showLines(restLine1, "Presses: " + String(pressCount));
+  Bridge.notify("pressed", pressCount);
+}
+
+// The button was held 3 seconds (real or typed): ask Linux for pair mode.
+// Not counted as a press. The screen changes when Linux calls pair_show.
+void onPairHold() {
+  Monitor.println("[pair_hold]");
+  Bridge.notify("pair_hold");
 }
 
 // ---------------------------------------------------------------------------
@@ -116,8 +133,19 @@ void readButton() {
   if (millis() - lastChange > DEBOUNCE_MS && reading != stableState) {
     stableState = reading;
     if (stableState == HIGH) {
+      // Pressed: start timing. Don't decide yet, it may become a hold.
+      pressStart = millis();
+      holdSent   = false;
+    } else if (!holdSent) {
+      // Released before 3 s: a short press.
       onPress();
     }
+  }
+
+  // Still held after 3 s: send pair_hold once. The release then does nothing.
+  if (stableState == HIGH && !holdSent && millis() - pressStart >= PAIR_HOLD_MS) {
+    holdSent = true;
+    onPairHold();
   }
 }
 
@@ -130,12 +158,14 @@ void readMonitor() {
 
   if (cmd == "p") {
     onPress();
+  } else if (cmd == "h") {
+    onPairHold();
   } else if (cmd == "t") {
     showLines("12345678901234567890", "x");  // expect only 1234567890123456
   } else if (cmd == "r") {
     showRest();
   } else if (cmd.length() > 0) {
-    Monitor.println("? commands: p = press, t = cut test, r = rest screen");
+    Monitor.println("? commands: p = press, h = 3 s hold, t = cut test, r = rest screen");
   }
 }
 
