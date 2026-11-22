@@ -12,7 +12,7 @@
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 
-const bool HAS_LCD    = false;  // 16x2 I2C LCD at 0x27
+const bool HAS_LCD    = true;   // 16x2 I2C LCD at 0x27
 const bool HAS_BUTTON = false;  // button on pin 5, HIGH when pressed
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);

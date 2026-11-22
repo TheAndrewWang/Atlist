@@ -2,7 +2,7 @@
 
 **Owner:** Ethan
 **Branch:** `firmware`
-**Code lives in:** `device/sketch/sketch.ino` (was `device/Atlist.ino`), the existing button + LCD + beeper test, which this track grows. `device/` is shared with the BLE server track (see the layout in `docs/tracks/README.md`). Test helpers: `device/ping/ping.ino` + `device/ping_test.py` check the Bridge link on their own.
+**Code lives in:** `device/sketch/sketch.ino` (was `device/Atlist.ino`), the existing button + LCD + beeper test, which this track grows. `device/` is shared with the BLE server track (see the layout in `docs/tracks/README.md`). Test helpers: `device/ping/ping.ino` + `device/ping_test.py` check the Bridge link on their own; `device/lcd_test/` scans the I2C bus and checks the LCD on its own.
 **Flashing:** the repo's `device/sketch/sketch.ino` is the source of truth. Edit it only in the repo, then paste it into an Arduino App Lab app's `sketch/sketch.ino` and press Run. Never edit the App Lab copy. Also copy `device/sketch/sketch.yaml` over the app's `sketch/sketch.yaml`: App Lab only compiles with the libraries listed there (Bridge + `LiquidCrystal I2C (1.1.2)`).
 **Builds against:** `docs/Protocol.md`: the **Bridge** section and the Rules
 **Tests alone with:** a tiny Python test script on the UNO Q's Linux side (or Serial commands) in place of the BLE server
@@ -19,7 +19,7 @@ It drives the hardware. It has no Bluetooth and no real clock; it does what the 
 
 | Part | Connection |
 |------|-----------|
-| 16×2 LCD, I2C | address `0x27` |
+| 16×2 LCD, I2C | address `0x27`; SDA/SCL on the **SDA/SCL pins past AREF** (D20/D21, the `Wire` bus), GND, **5V**. A4/A5 are a different bus (`Wire2`) on the UNO Q and won't work with this library |
 | Button | pin 5, `INPUT`, reads HIGH when pressed |
 | Piezo speaker | pin 8, 1200 Hz, 150 ms beep |
 
@@ -50,7 +50,7 @@ It drives the hardware. It has no Bluetooth and no real clock; it does what the 
   - With the BLE server owner, agree the `device/` folder layout App Lab needs for the sketch and the Python. Move `Atlist.ino` to match, and write the layout in the README's track table.
 - **Checkpoint:** a sample provides `ping()`, and a Python one-liner on the Linux side calls it and prints the reply.
 
-### [ ] 2. Split the sketch into functions
+### [x] 2. Split the sketch into functions
 - **Concepts:** turn the test sketch into small functions with one job each, so Bridge can call them.
 - **Build:** in `device/sketch/sketch.ino`:
   - `void showLines(const String& l1, const String& l2)`: clears the LCD and prints both lines, **cut to 16 characters**.
@@ -101,6 +101,7 @@ It drives the hardware. It has no Bluetooth and no real clock; it does what the 
 
 Newest entry first. At the end of each session, write what you finished, what's half-done, and the next action.
 
+- **2026-11-20:** Step 2 **done**, checkpoint passed on the real LCD: `Atlist`/`Ready` on boot, `t` shows only `1234567890123456`, `r` and `p` work, and the LCD matches the serial monitor. `HAS_LCD` is now `true` (`HAS_BUTTON` still `false`, no button yet). Problems hit: (1) App Lab's build cache (`~/ArduinoApps/<app>/.cache/sketch`) held 0-byte object files from the 11-17 failed build, giving `undefined reference` link errors. Deleting that folder fixed it. (2) The LCD stayed blank until SDA/SCL were wired to the SDA/SCL pins past AREF (D20/D21), not A4/A5. Added `device/lcd_test/` (I2C scan + LCD test), which found the LCD at `0x27`. Note: App Lab now strips the `Arduino_RouterBridge` lines from `sketch.yaml` (it's part of the platform now). The repo copy still lists them, so decide whether to update it. **Next:** step 3, provide `show` and `rest` over Bridge (read Protocol.md's Bridge table first).
 - **2026-11-17:** Step 2 **written, compiles, not yet flashed**. `sketch.ino` now has `showLines` (cuts to 16 chars), `beep`, `showRest` (`restLine1`/`restLine2`, default `"Atlist"`/`"Ready"`) and `onPress`; debounce moved into `readButton()`. **No LCD or button on hand**, so the sketch uses the RouterBridge `Monitor` (App Lab serial monitor) as a stand-in: every screen update prints as `[LCD] ...`, and typed commands `p` (press), `t` (16-char cut test), `r` (rest screen) replace the button. `HAS_LCD` / `HAS_BUTTON` switches (both `false`) skip the hardware code; flip them when parts arrive. `Monitor` API checked against the library's `examples/monitor/monitor.ino` (0.4.4). **Next:** flash via App Lab, run the checkpoint in the serial monitor (`Atlist`/`Ready` on boot, `p` beeps and counts, `t` prints only `1234567890123456`), tick step 2, then step 3.
 
 - **2026-11-13:** Step 1 **done**. Agreed Kevin's `device/` layout (written in `docs/tracks/README.md`) and moved `device/Atlist.ino` to `device/sketch/sketch.ino` with `git mv`; it compiles in place. Ping test files are kept as a Bridge health check. Flashing workflow: edit only the repo's `sketch.ino`, then paste it into App Lab to flash. Idea to raise with the team: have the real sketch also provide `ping`, so the health check works with the real firmware on (that adds a Bridge name, so it needs all three owners). **Next:** step 2, splitting the sketch into functions (`showLines`, `beep`, `showRest`, `onPress`).
