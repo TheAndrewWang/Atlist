@@ -66,9 +66,11 @@ State state = RESTING;
 String passkey = "";
 State stateBeforePair = RESTING;
 
-// Resting screen text (Linux sets it with "rest")
-String restLine1 = "Atlist";
-String restLine2 = "Ready";
+// Resting screen text (Linux sets it with "rest"). Until the first rest after
+// boot, the device doesn't know its task: it says so and ignores presses.
+String restLine1 = "Atlist Ready";
+String restLine2 = "No task loaded";
+bool taskLoaded = false;
 
 // The current message (Linux sets it with "show")
 String msgLine1 = "";
@@ -162,6 +164,7 @@ bool showMessage(String line1, String line2, int doBeep, int hold) {
 bool setRest(String line1, String line2) {
   restLine1 = line1;
   restLine2 = line2;
+  taskLoaded = true;
   if (state == RESTING) {
     drawScreen();
   }
@@ -199,10 +202,16 @@ bool pairEnd() {
 // --- Sketch -> Linux (docs/Protocol.md, Bridge notifications) ------------
 
 // A short press (real or typed): check off the task, tell Linux, and leave
-// the message unless its hold says to keep it (hold 2). Ignored in pair mode.
+// the message unless its hold says to keep it (hold 2). Ignored in pair mode and
+// before the first rest (no task loaded).
 void onPress() {
   if (state == PAIR_MODE) {
     Monitor.println("[press ignored: pair mode]");
+    return;
+  }
+  if (!taskLoaded) {
+    // No task yet: a press can't mean "done". Ignore it (no beep, no count).
+    Monitor.println("[press ignored: no task loaded]");
     return;
   }
   pressCount++;
