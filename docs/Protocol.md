@@ -117,6 +117,7 @@ On the UNO Q, the Python BLE server runs on the **Linux** side and the C++ sketc
   - `2` (next reminder): keep it until the next `show` call.
 - **Time, schedule and reset cycles:** Python owns them, because the Linux side has the real clock and storage. The sketch only reacts to `show`, `rest` and `clear_done`.
 - **Press count:** the sketch counts and Python forwards it. Both reset to 0 on reboot.
+- **Done state:** one device is one task. A short press marks the task done. While done, the resting screen shows `✓ <rest line1>` / `Already done` until `clear_done`. Further presses still beep and send `pressed` (the app sees repeat presses). A `show` never clears done, and a message never shows the `✓`; when it leaves, the done screen comes back. Done lives in the sketch's memory only, so a reboot forgets it (open issue).
 
 ## Pairing
 

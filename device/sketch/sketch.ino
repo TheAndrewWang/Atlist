@@ -77,7 +77,11 @@ int msgHold = 0;                 // 0 = until pressed, 1 = pressed or 60 min, 2 
 unsigned long msgShownAt = 0;    // millis() when the message went up, for hold 1
 
 // Task checked off this reset cycle. Set by any short press, cleared by clear_done.
+// While done, the resting screen says so until clear_done (the next reset
+// cycle). Further presses still beep and send "pressed". A show never clears
+// it: one device is one task, so a message doesn't start a new task.
 bool done = false;
+const char* DONE_LINE2 = "Already done";
 
 // ---------------------------------------------------------------------------
 
@@ -108,19 +112,18 @@ void beep() {
   Monitor.println("*beep*");
 }
 
-// Line 1 with the done mark in front ("✓ TAKE MEDS") while the task is done.
-String withDone(const String& line1) {
-  return done ? String(CHECK_CHAR) + " " + line1 : line1;
-}
-
 // Draws whatever the current state says should be on screen.
+// The done mark only goes on the resting screen ("✓ TAKE MEDS" / "Already
+// done"), never on a message: a message hasn't been checked off.
 void drawScreen() {
   if (state == PAIR_MODE) {
     showLines("PAIR MODE", passkey);
   } else if (state == SHOWING_MESSAGE) {
-    showLines(withDone(msgLine1), msgLine2);
+    showLines(msgLine1, msgLine2);
+  } else if (done) {
+    showLines(String(CHECK_CHAR) + " " + restLine1, DONE_LINE2);
   } else {
-    showLines(withDone(restLine1), restLine2);
+    showLines(restLine1, restLine2);
   }
 }
 
