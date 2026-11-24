@@ -15,7 +15,7 @@
 #include <LiquidCrystal_I2C.h>
 
 const bool HAS_LCD    = true;   // 16x2 I2C LCD at 0x27
-const bool HAS_BUTTON = false;  // button on pin 5, HIGH when pressed
+const bool HAS_BUTTON = true;   // button from pin 5 to GND, INPUT_PULLUP: LOW when pressed
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
@@ -44,8 +44,8 @@ uint8_t checkBits[8] = {
 };
 
 // Button debounce state
-int stableState = LOW;
-int lastReading = LOW;
+int stableState = HIGH;  // HIGH = released (pull-up)
+int lastReading = HIGH;
 unsigned long lastChange = 0;
 
 // Short press vs 3-second hold
@@ -57,10 +57,14 @@ unsigned int pressCount = 0;
 
 // --- State -----------------------------------------------------------------
 // The device is always in exactly one state; events (show, press, timeout,
-// rest, clear_done) move it between them and then redraw the screen.
-// PAIR_MODE joins in step 6.
-enum State { RESTING, SHOWING_MESSAGE };
+// rest, clear_done, pair_show, pair_end) move it between them and then
+// redraw the screen.
+enum State { RESTING, SHOWING_MESSAGE, PAIR_MODE };
 State state = RESTING;
+
+// Pair mode: the passkey on screen, and where pair_end goes back to.
+String passkey = "";
+State stateBeforePair = RESTING;
 
 // Resting screen text (Linux sets it with "rest")
 String restLine1 = "Atlist";
@@ -111,7 +115,9 @@ String withDone(const String& line1) {
 
 // Draws whatever the current state says should be on screen.
 void drawScreen() {
-  if (state == SHOWING_MESSAGE) {
+  if (state == PAIR_MODE) {
+    showLines("PAIR MODE", passkey);
+  } else if (state == SHOWING_MESSAGE) {
     showLines(withDone(msgLine1), msgLine2);
   } else {
     showLines(withDone(restLine1), restLine2);
@@ -130,13 +136,18 @@ void showRest() {
 // the beep() function.
 
 // Bridge "show": show a message, beep if asked, keep it per hold.
-// A new show replaces any message, whatever its hold.
+// A new show replaces any message, whatever its hold. In pair mode the
+// message is kept and appears after pair_end.
 bool showMessage(String line1, String line2, int doBeep, int hold) {
   msgLine1   = line1;
   msgLine2   = line2;
   msgHold    = hold;
   msgShownAt = millis();
-  state      = SHOWING_MESSAGE;
+  if (state == PAIR_MODE) {
+    stateBeforePair = SHOWING_MESSAGE;
+  } else {
+    state = SHOWING_MESSAGE;
+  }
   drawScreen();
   if (doBeep == 1) {
     beep();
@@ -161,11 +172,36 @@ bool clearDone() {
   return true;
 }
 
+// Bridge "pair_show": show PAIR MODE and the passkey. Called again with a new
+// passkey, it only updates the passkey (pair_end still goes back correctly).
+bool pairShow(String key) {
+  if (state != PAIR_MODE) {
+    stateBeforePair = state;
+    state = PAIR_MODE;
+  }
+  passkey = key;
+  drawScreen();
+  return true;
+}
+
+// Bridge "pair_end": back to the message or resting screen from before.
+bool pairEnd() {
+  if (state == PAIR_MODE) {
+    state = stateBeforePair;
+  }
+  drawScreen();
+  return true;
+}
+
 // --- Sketch -> Linux (docs/Protocol.md, Bridge notifications) ------------
 
 // A short press (real or typed): check off the task, tell Linux, and leave
-// the message unless its hold says to keep it (hold 2).
+// the message unless its hold says to keep it (hold 2). Ignored in pair mode.
 void onPress() {
+  if (state == PAIR_MODE) {
+    Monitor.println("[press ignored: pair mode]");
+    return;
+  }
   pressCount++;
   beep();
   done = true;
@@ -204,7 +240,7 @@ void readButton() {
 
   if (millis() - lastChange > DEBOUNCE_MS && reading != stableState) {
     stableState = reading;
-    if (stableState == HIGH) {
+    if (stableState == LOW) {
       // Pressed: start timing. Don't decide yet, it may become a hold.
       pressStart = millis();
       holdSent   = false;
@@ -215,7 +251,7 @@ void readButton() {
   }
 
   // Still held after 3 s: send pair_hold once. The release then does nothing.
-  if (stableState == HIGH && !holdSent && millis() - pressStart >= PAIR_HOLD_MS) {
+  if (stableState == LOW && !holdSent && millis() - pressStart >= PAIR_HOLD_MS) {
     holdSent = true;
     onPairHold();
   }
@@ -247,7 +283,7 @@ void setup() {
   Bridge.begin();
   Monitor.begin(115200);
 
-  pinMode(BUTTON_PIN, INPUT);
+  pinMode(BUTTON_PIN, INPUT_PULLUP);  // internal pull-up: no resistor needed
   pinMode(SPEAKER_PIN, OUTPUT);
 
   if (HAS_LCD) {
@@ -266,6 +302,12 @@ void setup() {
   }
   if (!Bridge.provide_safe("clear_done", clearDone)) {
     Monitor.println("ERROR: could not provide clear_done");
+  }
+  if (!Bridge.provide_safe("pair_show", pairShow)) {
+    Monitor.println("ERROR: could not provide pair_show");
+  }
+  if (!Bridge.provide_safe("pair_end", pairEnd)) {
+    Monitor.println("ERROR: could not provide pair_end");
   }
 }
 
