@@ -1,4 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
+using Atlist.Services;
+using Atlist.ViewModels;
+using Atlist.Views;
 
 namespace Atlist
 {
@@ -18,6 +21,10 @@ namespace Atlist
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
+
+            builder.Services.AddSingleton<IDeviceService, FakeDeviceService>();
+            builder.Services.AddTransient<DevicesViewModel>();
+            builder.Services.AddTransient<DevicesPage>();
 
             return builder.Build();
         }

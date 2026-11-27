@@ -18,7 +18,7 @@ public class FakeDeviceService : IDeviceService {
         new Device { Id = "Checklist-5C7A", Name = "Return Books", RestLine1 = "RETURN BOOKS", RestLine2 = "Due 3:00 PM", Status = DeviceStatus.Connected, Location = "Troy" },
     };
 
-    public Task<IReadOnlyList<Device>> GetDevicesAsync() { return Task.FromResult((IReadOnlyList<Device>)_devices); }
+    public Task<IReadOnlyList<Device>> GetDevicesAsync() { return Task.FromResult<IReadOnlyList<Device>>(_devices.ToList()); }
     public Task SendAsync(Message message, Device device) {
         ArgumentNullException.ThrowIfNull(device); 
         ArgumentNullException.ThrowIfNull(message);
@@ -34,7 +34,7 @@ public class FakeDeviceService : IDeviceService {
 
     }
     public event Action<string, int>? Pressed;
-    public async IAsyncEnumerable<Device> ScanAsync(CancellationToken ct) {
+    public async IAsyncEnumerable<Device> ScanAsync([EnumeratorCancellation] CancellationToken ct) {
         foreach(var device in _nearby) {
             await Task.Delay(1000, ct);
             if (_devices.Any(d => d.Id == device.Id)) {
