@@ -1,8 +1,199 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Atlist.ViewModels"
+             xmlns:models="clr-namespace:Atlist.Models"
              x:Class="Atlist.Views.DevicesPage"
+             x:DataType="vm:DevicesViewModel"
              Title="My devices"
-             >
-    <Label Text="Devices coming soon"></Label>
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,Auto,*" Padding="16,24,16,0" RowSpacing="16">
+
+        <!-- Header: big title on the left, "+" (pair a device) on the right -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+            <Label Text="My devices"
+                   FontSize="32" FontAttributes="Bold"
+                   TextColor="{StaticResource Ink}"
+                   VerticalOptions="Center" />
+            <Button Command="{Binding ScanDevicesCommand}" Grid.Column="1"
+                    Text="+" FontSize="28"
+                    WidthRequest="56" HeightRequest="56"
+                    CornerRadius="14" Padding="0" />
+        </Grid>
+
+        <!-- Nearby devices found by ScanCommand.
+             Hidden when not scanning AND the list is empty. -->
+        <Border Grid.Row="1"
+                BackgroundColor="{StaticResource CardBackground}"
+                Stroke="{StaticResource Primary}"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 16"
+                Padding="16">
+            <Border.Triggers>
+                <MultiTrigger TargetType="Border">
+                    <MultiTrigger.Conditions>
+                        <BindingCondition Binding="{Binding IsScanning}" Value="False" />
+                        <BindingCondition Binding="{Binding NearbyDevices.Count}" Value="0" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="IsVisible" Value="False" />
+                </MultiTrigger>
+            </Border.Triggers>
+
+            <VerticalStackLayout Spacing="10">
+                <!-- Section title + spinner while scanning -->
+                <HorizontalStackLayout Spacing="10">
+                    <Label Text="Nearby devices"
+                           FontSize="16" FontAttributes="Bold"
+                           TextColor="{StaticResource Ink}"
+                           VerticalOptions="Center" />
+                    <ActivityIndicator IsRunning="{Binding IsScanning}"
+                                       IsVisible="{Binding IsScanning}"
+                                       Color="{StaticResource Primary}"
+                                       HeightRequest="20" WidthRequest="20" />
+                </HorizontalStackLayout>
+
+                <!-- BindableLayout: a plain stack that repeats a template per item.
+                     Used instead of a second CollectionView, which would scroll
+                     inside the page and fight the device list for space. -->
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding NearbyDevices}" Spacing="8">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="models:Device">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <VerticalStackLayout VerticalOptions="Center">
+                                    <Label Text="{Binding Name}" FontSize="15"
+                                           TextColor="{StaticResource Ink}" />
+                                    <Label Text="{Binding Id}" FontSize="12"
+                                           TextColor="{StaticResource Gray600}" />
+                                </VerticalStackLayout>
+                                <!-- BindingContext here is a Device, so reach up to the
+                                     ViewModel for the command and pass this Device along. -->
+                                <Button Grid.Column="1" Text="Pair"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:DevicesViewModel}}, Path=PairDeviceCommand, x:DataType=vm:DevicesViewModel}"
+                                        CommandParameter="{Binding .}"
+                                        CornerRadius="10" Padding="16,6" />
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </Border>
+
+        <!-- One card per Device in DevicesViewModel.Devices -->
+        <CollectionView Grid.Row="2" ItemsSource="{Binding Devices}">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="16" />
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Device">
+
+                    <!-- Card -->
+                    <Border BackgroundColor="{StaticResource CardBackground}"
+                            Stroke="{StaticResource CardBorder}"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 16"
+                            Padding="16">
+                        <VerticalStackLayout Spacing="14">
+
+                            <!-- Row 1: name + location | status chip -->
+                            <Grid ColumnDefinitions="*,Auto">
+                                <VerticalStackLayout>
+                                    <Label Text="{Binding Name}"
+                                           FontSize="18" FontAttributes="Bold"
+                                           TextColor="{StaticResource Ink}" />
+                                    <Label Text="{Binding Location}"
+                                           FontSize="13"
+                                           TextColor="{StaticResource Gray600}" />
+                                </VerticalStackLayout>
+
+                                <!-- Chip: Connected look by default, trigger swaps it -->
+                                <Border Grid.Column="1"
+                                        VerticalOptions="Start"
+                                        Padding="10,4"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 12"
+                                        BackgroundColor="{StaticResource ChipConnected}">
+                                    <Border.Triggers>
+                                        <DataTrigger TargetType="Border"
+                                                     Binding="{Binding Status}"
+                                                     Value="{x:Static models:DeviceStatus.OutOfRange}">
+                                            <Setter Property="BackgroundColor" Value="{StaticResource ChipOutOfRange}" />
+                                        </DataTrigger>
+                                    </Border.Triggers>
+
+                                    <Label Text="Connected"
+                                           FontSize="12" FontAttributes="Bold"
+                                           TextColor="{StaticResource Primary}">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label"
+                                                         Binding="{Binding Status}"
+                                                         Value="{x:Static models:DeviceStatus.OutOfRange}">
+                                                <Setter Property="Text" Value="Out of range" />
+                                                <Setter Property="TextColor" Value="#9A5B22" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                </Border>
+                            </Grid>
+
+                            <!-- Row 2 (connected only): LCD preview of the resting screen -->
+                            <Border BackgroundColor="{StaticResource Ink}"
+                                    Stroke="#3A4248" StrokeThickness="2"
+                                    StrokeShape="RoundRectangle 6"
+                                    Padding="14,10">
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border"
+                                                 Binding="{Binding Status}"
+                                                 Value="{x:Static models:DeviceStatus.OutOfRange}">
+                                        <Setter Property="IsVisible" Value="False" />
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="{Binding RestLine1}" FontFamily="monospace"
+                                           FontSize="16" TextColor="{StaticResource LcdText}" />
+                                    <Label Text="{Binding RestLine2}" FontFamily="monospace"
+                                           FontSize="16" TextColor="{StaticResource LcdText}" />
+                                </VerticalStackLayout>
+                            </Border>
+
+                            <!-- Row 3 (connected only): buttons. Not wired yet (steps 4 and 7). -->
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                <Grid.Triggers>
+                                    <DataTrigger TargetType="Grid"
+                                                 Binding="{Binding Status}"
+                                                 Value="{x:Static models:DeviceStatus.OutOfRange}">
+                                        <Setter Property="IsVisible" Value="False" />
+                                    </DataTrigger>
+                                </Grid.Triggers>
+                                <Button Text="Send message" FontAttributes="Bold" CornerRadius="12" />
+                                <Button Grid.Column="1" Text="Settings" FontAttributes="Bold"
+                                        CornerRadius="12"
+                                        BackgroundColor="Transparent"
+                                        TextColor="{StaticResource Primary}"
+                                        BorderColor="{StaticResource Primary}"
+                                        BorderWidth="2" />
+                            </Grid>
+
+                            <!-- Out-of-range only: explain the offline queue -->
+                            <Label IsVisible="False"
+                                   FontSize="13"
+                                   TextColor="{StaticResource Gray600}"
+                                   Text="Messages you send will wait here and deliver when the phone is back in range.">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label"
+                                                 Binding="{Binding Status}"
+                                                 Value="{x:Static models:DeviceStatus.OutOfRange}">
+                                        <Setter Property="IsVisible" Value="True" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+
+                        </VerticalStackLayout>
+                    </Border>
+
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
 </ContentPage>

@@ -32,6 +32,10 @@
     <Color x:Key="CardBorder">#EAE5DC</Color>
     <Color x:Key="Ink">#0E191F</Color>
 
+    <Color x:Key="ChipConnected">#DCEFE9</Color>
+    <Color x:Key="ChipOutOfRange">#F3E3D2</Color>
+    <Color x:Key="LcdText">#9EE7F5</Color>
+
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
     <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
     <SolidColorBrush x:Key="TertiaryBrush" Color="{StaticResource Tertiary}"/>
